@@ -86,28 +86,53 @@ class DatasetGenerate(object):
         params = []
         for p_i in range(p):
             loc = self.param_settings[p_i]
-
             param = torch.tensor(np.random.binomial(1, 0.5, size=(d)).astype(np.float32)) * self.config['r']
-
-            params.append(param)
+            params.append(param)                # generate data parameters for each distribution/cluster
 
         dataset['params'] = params
         dataset['data'] = []
 
         # generate dataset for each machine
-        cluster_assignment = [m_i//(m//p) for m_i in range(m)] # ex: [0,0,0,0, 1,1,1,1, 2,2,2,2] for m = 12, p = 3
+        cluster_assignment = [m_i//(m//p) for m_i in range(m)] # generate label for each machine
         dataset['cluster_assignment'] = cluster_assignment
 
         for m_i in range(m):
-            p_i = cluster_assignment[m_i]
+            p_i = cluster_assignment[m_i]  # the ith distribution's parameters
 
-            data_X = random_normal_tensor(size=(n,d))
-            data_y = data_X @ params[p_i]
+            data_X = random_normal_tensor(size=(n,d)) # generate standard normal distribution N(0, 1) with size n and dim=d.
+            data_y = data_X @ params[p_i] # mixture of gaussians
 
             noise_y = random_normal_tensor(size=(n), scale = self.config['noise_scale'] )
-            data_y = data_y + noise_y
+            data_y = data_y + noise_y  # add noise to y
+            data_y_label = [f'normal_{m_i}'] * len(data_y)
 
-            dataset['data'].append((data_X, data_y))
+            dataset['data'].append((data_X, data_y, data_y_label))
+
+        ###################################################
+        # generate data for each Byzantine machine
+        params_b = []
+        for p_i in range(p):
+            loc = self.param_settings[p_i]
+            param = torch.tensor(np.random.binomial(1, 0.8, size=(d)).astype(np.float32)) * self.config['r']
+            params_b.append(param)
+
+        # generate dataset for each machine
+        m_b = self.config['m_b']
+        cluster_assignment_b = [m_i // (m_b // p) for m_i in range(m_b)]  # generate label for each Byzantine machine
+        dataset['cluster_assignment'] = cluster_assignment + cluster_assignment_b
+
+        for m_i in range(m_b):
+            p_i = cluster_assignment_b[m_i]  # the ith distribution's parameters
+
+            data_X = random_normal_tensor(
+                size=(n, d))  # generate standard normal distribution N(0, 1) with size n and dim=d.
+            data_y = data_X @ params_b[p_i]  # mixture of gaussians
+
+            noise_y = random_normal_tensor(size=(n), scale=self.config['noise_scale'])
+            data_y = data_y + noise_y  # add noise to y
+            data_y_label = [f'Byzantine_{m_i}'] * len(data_y)
+
+            dataset['data'].append((data_X, data_y, data_y_label))
 
         self.dataset = dataset
         return dataset

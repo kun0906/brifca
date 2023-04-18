@@ -1,17 +1,20 @@
 {
-    "m" : 100,
-    "p" : 2,
+    "M" : 100,
+    "alpha": 0.2,
+    "p" : 5,
 
     "n" : 100,
-    "d" : 1000,
+    "d" : 5,
 
     "r" : 1.0,
 
     "noise_scale": 0.001,
 
-    "num_epochs": 300,
+    "num_epochs": 30,
     "score":"set",
     "lr":0.1,
     "data_seed":0,
-    "train_seed":0
+    "train_seed":0,
+
+    "init_method": "client_kmeans++"
 }

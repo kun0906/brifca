@@ -48,6 +48,10 @@ def get_config():
     args_dict = vars(args)
     config.update(args_dict)
 
+    if 'M' in config.keys():
+        config['m'] = int(np.round(config['M'] * (1 - config['alpha'])))    # compute number of normal machines
+        config['m_b'] = config['M'] - config['m']   # compute number of Byzantine machines
+
     if config["config_override"] == "":
         del config['config_override']
     else:

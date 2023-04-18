@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-
+import time
 
 def test():
 
@@ -8,6 +8,7 @@ def test():
 
 
 def random_normal_tensor(size, loc = 0, scale = 1):
+    # generate normal distribution with mu = loc and std = scale.
     return torch.randn(size) * scale + loc
 
 
