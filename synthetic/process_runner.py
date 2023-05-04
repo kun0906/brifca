@@ -66,7 +66,7 @@ class ProcessRunner(object):
         self.cfgs = list(product_dict(**self.cfg))
 
         if self.arr_size is not None and self.arr_index is not None:
-            assert arr_size > arr_index
+            assert self.arr_size > self.arr_index
             self.cfgs = chunk(self.cfgs, self.arr_index ,self.arr_size)
 
         self.tasks = [ self.task(cfg) for cfg in self.cfgs]
@@ -268,21 +268,21 @@ class SimpleEchoTask(PRTask):
 
         proc1 = PRProcess(
             command = ["echo", str(cfg['m']),str(cfg['n']),str(cfg['lr'])],
-            output_dir = f"outputs/echo_{cfg['m']}_{cfg['n']}_{cfg['lr']}_1",
+            output_dir = f"output/echo_{cfg['m']}_{cfg['n']}_{cfg['lr']}_1",
             result_fname = 'stdout.txt',
             cleanup_fnames =['stdout.txt','stderr.txt']
             )
 
         proc2 = PRProcess(
             command = ["sleep", "0.2"],
-            output_dir = f"outputs/echo_{cfg['m']}_{cfg['n']}_{cfg['lr']}_sleep",
+            output_dir = f"output/echo_{cfg['m']}_{cfg['n']}_{cfg['lr']}_sleep",
             result_fname = 'stdout.txt',
             cleanup_fnames =['stdout.txt','stderr.txt']
             )
 
         proc3 = PRProcess(
             command = ["echo", str(cfg['m']),str(cfg['n']),str(cfg['lr']), "22"],
-            output_dir = f"outputs/echo_{cfg['m']}_{cfg['n']}_{cfg['lr']}_2",
+            output_dir = f"output/echo_{cfg['m']}_{cfg['n']}_{cfg['lr']}_2",
             result_fname = 'stdout.txt',
             cleanup_fnames =['stdout.txt','stderr.txt']
             )

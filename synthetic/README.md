@@ -3,9 +3,13 @@
 Implementation of IFCA, synthetic experiments.
 
 ## Requirements
-* Python3
-* Pytorch
-* Numpy
+* Python3==3.9.16 
+* torch==2.0.0
+* Numpy==1.24.2
+* scipy==1.10.1
+* scikit-learn==1.2.2
+* scikit-learn-extra==0.3.0
+* matplotlib==3.7.1
 
 ## Config.json
 ```json
@@ -30,7 +34,7 @@ bash run.sh
 ```
 * To reproduce results in the paper:
 ```bash
-python run_p2_m_n.py   # p=2, m vs n
+python run_all.py   # p=2, m vs n
 python run_p4_m_n.py   # p=4, m vs n
 python run_p2_r_noise.py   # p=2, r vs noise
 python run_p4_r_noise.py   # p=4, r vs noise

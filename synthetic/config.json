@@ -1,20 +1,24 @@
 {
-    "M" : 100,
-    "alpha": 0.2,
-    "p" : 5,
+    "m" : 40,
+    "alpha": 0.1,
+
+    "p" : 2,
 
     "n" : 100,
-    "d" : 5,
+    "d" : 2,
 
     "r" : 1.0,
 
-    "noise_scale": 0.001,
+    "noise_scale": 0.45,
 
-    "num_epochs": 30,
+    "num_epochs": 300,
     "score":"set",
     "lr":0.1,
     "data_seed":0,
     "train_seed":0,
 
-    "init_method": "client_kmeans++"
+    "init_method": "server_omniscient",
+
+    "update_method":"median",
+    "beta": 0.05
 }

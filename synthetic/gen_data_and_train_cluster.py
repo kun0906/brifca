@@ -1,4 +1,5 @@
 import argparse
+import functools
 import json
 import os
 import time
@@ -13,12 +14,13 @@ from util import *
 from generate_synthetic_dataset import *
 from train_cluster import *
 
+print = functools.partial(print, flush=True)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--project-dir",type=str,default="output")
 parser.add_argument("--dataset-dir",type=str,default="output")
 parser.add_argument("--lr",type=float,default=0.01)
-parser.add_argument("--data-seed",type=int,default=0)
+parser.add_argument("--data-seed",type=int,default=1)
 parser.add_argument("--train-seed",type=int,default=0)
 parser.add_argument("--config-override",type=str,default="")
 args = parser.parse_args()
@@ -38,7 +40,7 @@ def main():
     exp.setup(dataset= dataset)
     exp.run()
 
-    pass
+    # pass
 
 def get_config():
     # read config json and update the sysarg
@@ -48,10 +50,7 @@ def get_config():
     args_dict = vars(args)
     config.update(args_dict)
 
-    if 'M' in config.keys():
-        config['m'] = int(np.round(config['M'] * (1 - config['alpha'])))    # compute number of normal machines
-        config['m_b'] = config['M'] - config['m']   # compute number of Byzantine machines
-
+    # update the config if config_override is not empty
     if config["config_override"] == "":
         del config['config_override']
     else:
@@ -59,6 +58,11 @@ def get_config():
         config_override = json.loads(config['config_override'])
         del config['config_override']
         config.update(config_override)
+
+    # compute number of normal and Byzantine machines
+    if 'm' in config.keys():
+        config['m_n'] = int(np.round(config['m'] * (1 - config['alpha'])))  # compute number of normal machines
+        config['m_b'] = config['m'] - config['m_n']  # compute number of Byzantine machines
 
     return config
 
