@@ -138,7 +138,8 @@ class DatasetGenerate(object):
             # where each sample is equal to the number of successes over the n trials.
             # r: separation parameter for synthetic data generation
             while True:
-                param = torch.tensor(np.random.binomial(n=100, p=0.5, size=(d)).astype(np.float32)) * self.config['r']
+                # n = 1 is Bernoulli distribution
+                param = torch.tensor(np.random.binomial(n=1, p=0.5, size=(d)).astype(np.float32)) * self.config['r']
                 if torch.linalg.norm(param, 2) > 0: break
             param = param/torch.linalg.norm(param, 2)  # normalize the vector by l2 norm
             # param = np.zeros((d))
@@ -175,9 +176,9 @@ class DatasetGenerate(object):
         for p_i in range(p_b):
             # loc = self.param_settings[p_i]
             while True:
-                param = torch.tensor(np.random.binomial(100, 0.5, size=(d)).astype(np.float32)) * self.config['r']
+                param = torch.tensor(np.random.binomial(1, 0.5, size=(d)).astype(np.float32)) * self.config['r']
                 if torch.linalg.norm(param, 2) > 0: break
-            param = 3* param / torch.linalg.norm(param, 2)  # l2 norm
+            param = 3 * param / torch.linalg.norm(param, 2)  # l2 norm = 3
             params_b.append(param)
         print('Byzantine params(weights):', params_b)
         # generate dataset for each Byzantine machine

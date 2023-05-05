@@ -1,3 +1,8 @@
+"""
+
+    PYTHONPATH='..' PYTHONUNBUFFERED=TRUE python3 run_all.py > 'output/log.txt' 2>&1
+
+"""
 import os
 import json
 import time
@@ -26,7 +31,7 @@ def main():
         cfg = {
             "p": [5],  # number of distributions/clusters
 
-            "m": [20, 200, 400],  # number of total machines (Normal + Byzantine)
+            "m": [20, 100],  # number of total machines (Normal + Byzantine)
             'alpha': [0.05],  # percent of Byzantine machines
 
             "n": [50],  # number of data points per each machine
@@ -57,18 +62,18 @@ def main():
 
             "d": [20, 200, 500, 1000],  # different data dimensions
 
-            "noise_scale": [0.1],  # standard deviation of noise/epsilon
+            "noise_scale": [0.4472],  # standard deviation of noise/epsilon
 
             "r": [1.0],  # separation parameter for synthetic data generation
 
             'update_method': ['mean', 'median', 'trimmed_mean'],  # gradient update methods for server
             'beta': [0.05],  # trimmed means parameters
 
-            "data_seed": range(40),  # different seeds for data
+            "data_seed": [v for v in range(0, 100, 20)],  # different seeds for data
 
-            "train_seed": range(10),  # different seeds for training
+            "train_seed": [0],  # different seeds for training
 
-            'lr': [1.0, 0.1, 0.01],  # different learning rates
+            'lr': [0.01],  # different learning rates
         }
 
     task = MyTask

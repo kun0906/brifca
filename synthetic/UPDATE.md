@@ -1,3 +1,9 @@
+V0.0.3: Change Binomial distribution to Bernoulli distribution
+1. Change Binomial distribution to Bernoulli distribution
+2. Normalize the estimated weights after each update
+3. Modify calculate_loss_grad() for Byzantine machines 
+
+
 V0.0.2: Add coordinate-wise median and trimmed mean 
 1. Add coordinate-wise median and trimmed mean 
 2. Initialize the weights/parameters with values that are closet to ground-truth

@@ -226,7 +226,10 @@ class TrainCluster(object):
                     loss_val, grad = calculate_loss_grad(self.models[p_i], self.criterion, X, y) # just compute the grads, no updates
                     # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
                 else:  # Byzantine loss
-                    loss_val, grad = calculate_loss_grad(self.models[p_i], self.criterion, X, y)
+                    tmp_model = copy.deepcopy(self.models[p_i])
+                    ws = tmp_model.weight()
+                    ws.data = 3 * ws.data
+                    loss_val, grad = calculate_loss_grad(tmp_model, self.criterion, X, y)
                     # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
                     # loss_val, grad = 0, 0
                 losses[(m_i, p_i)] = loss_val
@@ -296,6 +299,8 @@ class TrainCluster(object):
                 raise NotImplementedError(f'{update_method}')
 
             weight.data -= lr * tmp
+            # normalize the weight
+            weight.data = weight.data/torch.linalg.norm(weight.data, 2)
             weights.append(weight.detach().numpy())
 
         # Client:
@@ -369,7 +374,8 @@ class TrainCluster(object):
             # initialize the weights are close to ground-truth
             # param = torch.tensor(np.random.binomial(1, 0.5, size=(1, d)).astype(np.float32)) * 1.0    # wrong initalization
             while True:
-                param = torch.tensor(np.random.binomial(n=100, p=0.5, size=(d)).astype(np.float32)) * self.config['r']
+                # n = 1 is Bernoulli distribution
+                param = torch.tensor(np.random.binomial(n=1, p=0.5, size=(d)).astype(np.float32)) * self.config['r']
                 if torch.linalg.norm(param, 2) > 0: break
             param = param/torch.linalg.norm(param, 2)  # l2 norm
             weight.data = param  # initialize weights as [0, 1]
