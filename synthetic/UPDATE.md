@@ -1,3 +1,16 @@
+V0.0.4:Update trimmed means
+1. Update trimmed means in gradient_trimmed_mean()
+    _tmp = torch.mean(grads[mask][:, i], dim=0)
+2. Add more colors to plot_data()
+ colors = ['r', 'g', 'b', 'black', 'm', 'brown', 'purple', 'yellow',
+              'tab:blue', 'tab:orange','tab:green','tab:red','tab:purple','tab:brown','tab:pink','tab:gray',
+              'tab:olive','tab:cyan',]
+3. Update runner.summarize(force=args.force)
+   ns = self.cfg['n']
+   x_label = 'n' 
+   xs = ns  # x-axis
+
+
 V0.0.3: Change Binomial distribution to Bernoulli distribution
 1. Change Binomial distribution to Bernoulli distribution
 2. Normalize the estimated weights after each update

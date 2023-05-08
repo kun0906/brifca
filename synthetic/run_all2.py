@@ -29,12 +29,12 @@ def main():
     if is_debugging:
         # Note that the last three parameters must be "data_seed, train_seed, and lr"
         cfg = {
-            "p": [10],  # number of distributions/clusters
+            "p": [5],  # number of distributions/clusters
 
             "m": [200],  # number of total machines (Normal + Byzantine)
-            'alpha': [0.05, 0.1],  # percent of Byzantine machines
+            'alpha': [0.05],  # percent of Byzantine machines
 
-            "n": [50,100],  # number of data points per each machine
+            "n": [50],  # number of data points per each machine
 
             "d": [20],  # different data dimensions
 
@@ -321,21 +321,28 @@ class MyProcessRunner(ProcessRunner):
         print(f"n {cfg2['n'][0]}")
         plot_metric = 'max_dist'    # 'max_dist'    # min_loss, 'min_dist'
         ms = self.cfg['m']
-        ds = self.cfg['d']
-        ns = self.cfg['n']
+        x_label = 'm'
+        xs = ms  # x-axis
+        # ds = self.cfg['d']
+        # ns = self.cfg['n']
+        # x_label = 'n'
+        # xs = ns  # x-axis
+
         update_methods = self.cfg['update_method']
         print(plot_metric, ms, update_methods)
-        xs = ns  # x-axis
+
 
         plot_data = {}
         for update_method in update_methods:
             ys = []
             ys_erros = []
-            for m in ms:    # x_labels: different machines, y_label: metric
+            for m in xs:    # x_labels: different machines, y_label: metric
                 for cfg in cfgs2: # all results
                     key1 = cfg.keys()
                     key1v = cfg.values()
+                    # if x_label == 'm':
                     if cfg['m'] != m or cfg['update_method'] != update_method: continue
+                    # if x_label == 'n':
                     # if cfg['n'] != m or cfg['update_method'] != update_method: continue
 
                     THRE = THRE0 * cfg["noise_scale"]
@@ -356,7 +363,7 @@ class MyProcessRunner(ProcessRunner):
 
         is_show = True
         if is_show:
-            x_label = 'm'
+
             y_label = plot_metric
 
             import matplotlib;

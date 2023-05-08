@@ -50,7 +50,10 @@ def get_config():
 def plot_data(data_lst, cluster_assignment, is_show=False):
     import matplotlib.pyplot as plt
     # plot X
-    colors = ['r', 'g', 'b', 'black', 'm', 'brown', 'purple', 'yellow', ]
+    colors = ['r', 'g', 'b', 'black', 'm', 'brown', 'purple', 'yellow',
+              'tab:blue', 'tab:orange','tab:green','tab:red','tab:purple','tab:brown','tab:pink','tab:gray',
+              'tab:olive','tab:cyan',]
+    # https://matplotlib.org/stable/gallery/color/named_colors.html
     j = 0
     cnt = 0
     title = ''
@@ -67,6 +70,7 @@ def plot_data(data_lst, cluster_assignment, is_show=False):
             label = None
         if label is not None: title += f'{label}:'
         cnt += len(X)
+        # print(f'j:{j}', colors[j], flush=True)
         plt.scatter(X[:, 0], X[:, 1], c=[colors[j]] * len(y), label=label, alpha=0.5)
     title += f'{cnt}'
     plt.xlabel(f'X[:, 0]')
@@ -78,7 +82,6 @@ def plot_data(data_lst, cluster_assignment, is_show=False):
 
     # plot X[:, 0] and y
     for idx in range(X.shape[1]):
-        colors = ['r', 'g', 'b', 'black', 'm', 'brown', 'purple', 'yellow', ]
         j = 0
         for i, (X, y, y_label) in enumerate(data_lst):
             if i == 0:

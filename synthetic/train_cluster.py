@@ -513,7 +513,8 @@ def gradient_trimmed_mean(scores, grads, beta):
             if 2 * m >= len(ts):
                 raise ValueError(f'beta({beta}) is too large!')
             elif m == 0:
-                _tmp = torch.mean(grads[mask][i], dim=0)
+                # print(i, d, grads[mask][:, i], flush=True)
+                _tmp = torch.mean(grads[mask][:, i], dim=0)
             else:
                 _tmp = torch.mean(torch.stack([vs[0][i] for vs in ts[m:-m]]), dim=0)
             tmp[i] = _tmp
