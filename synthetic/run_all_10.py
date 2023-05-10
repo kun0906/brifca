@@ -1,6 +1,7 @@
 """
-
-    PYTHONPATH='..' PYTHONUNBUFFERED=TRUE python3 run_all.py > 'output/log.txt' 2>&1
+    module load anaconda3/2021.11
+    conda activate py3104_ifca
+    PYTHONPATH='..' PYTHONUNBUFFERED=TRUE python3 run_all.py > 'output/log.txt' 2>&1 &
 
 """
 import os
@@ -29,14 +30,14 @@ def main():
     if is_debugging:
         # Note that the last three parameters must be "data_seed, train_seed, and lr"
         cfg = {
-            "p": [5],  # number of distributions/clusters
+            "p": [10],  # number of distributions/clusters
 
-            "m": [200],  # number of total machines (Normal + Byzantine)
+            "m": [400],  # number of total machines (Normal + Byzantine)
             'alpha': [0.05],  # percent of Byzantine machines
 
-            "n": [50],  # number of data points per each machine
+            "n": [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
 
-            "d": [20],  # different data dimensions
+            "d": [20, 200, 500, 1000],  # different data dimensions: [5, 25, 50, 100, 200]
 
             "noise_scale": [0.4472],  # standard deviation of noise/epsilon: sigma**2 = 0.2
 
@@ -45,7 +46,7 @@ def main():
             'update_method': ['mean', 'median', 'trimmed_mean'],  # ['mean', 'median', 'trimmed_mean'],  # gradient update methods for server
             'beta': [0.05],  # trimmed means parameters
 
-            "data_seed": [v for v in range(0, 100, 20)],  # different seeds for data
+            "data_seed": [v for v in range(0, 100, 10)],  # different seeds for data
 
             "train_seed": [0],  # different seeds for training
 
@@ -95,8 +96,6 @@ class MyProcessRunner(ProcessRunner):
         THRE0 = 0.6
 
         results_fname = 'output/results.pkl'
-        if os.path.exists(results_fname):
-            os.rename(results_fname, results_fname + '-old.pkl')
         if os.path.exists(results_fname) and not force:
             print('loading results from {}'.format(results_fname))
             with open(results_fname, 'rb') as f:
@@ -122,8 +121,7 @@ class MyProcessRunner(ProcessRunner):
                         key = tuple(cfg.values())
                         # print(key)
 
-                        # results[key] = last_loss
-                        results[key] = res
+                        results[key] = last_loss
 
                     except EOFError as e:
                         eof_error_fnames.append(result_fname1)
@@ -160,7 +158,6 @@ class MyProcessRunner(ProcessRunner):
 
         # print(f"m {cfg2['m'][0]}, r {cfg2['r'][0]}")
         print(f"n {cfg2['n'][0]}")
-        plot_metric = 'max_dist'    # min_loss
 
         for cfg in cfgs2:
             key1 = cfg.keys()
@@ -176,7 +173,7 @@ class MyProcessRunner(ProcessRunner):
                 for t_i in self.cfg['train_seed']:
                     for lr in self.cfg['lr']:
                         key2 = tuple(list(key1v) + [d_i, t_i, lr])
-                        last_value = results[key2][-1][plot_metric]
+                        last_value = results[key2]
 
                         if np.isnan(last_value):
                             continue
@@ -214,41 +211,34 @@ class MyProcessRunner(ProcessRunner):
         with open("plot_data.pkl", 'wb') as f:
             pickle.dump(data1, f)
 
-        is_show = True
-        if is_show:
-            import matplotlib;
-            # matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend; instead, writes files
-            from matplotlib import pyplot as plt
+        # import matplotlib; matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend; instead, writes files
+        # from matplotlib import pyplot as plt
 
-            for x_label, y_label in [('m', 'n')]:
-                x_labels = self.cfg[x_label]
-                y_labels = self.cfg[y_label]
+        # noise_scales = self.cfg['noise_scale']
+        # rs = self.cfg['r']
 
-                print(f"x_labels: {x_labels}")
-                print(f"y_labels: {y_labels}")
+        # print("noise_scales")
+        # print(noise_scales)
+        # print("rs")
+        # print(rs)
 
-                for x in x_labels:
-                    ys = [plot_data[(x, y)] for y in y_labels]
-                    # print(f"success_rates for noise noise_scale {noise_scale}")
-                    print(x, ys)
-                    plt.plot(range(len(ys)), ys, label=f"{x_label}={x:.3f}")
+        # for noise_scale in noise_scales:
+        #     success_rates = [ plot_data[(noise_scale,r)] for r in rs ]
+        #     print(f"success_rates for noise noise_scale {noise_scale}")
+        #     print(success_rates)
+        #     plt.plot(rs, success_rates, label = f"noise_scale={noise_scale:.3f}")
 
-                # plt.title("r vs success rate")
-                plt.xlabel(f"{x_label}")
-                plt.ylabel(f"{y_label}")
+        # # plt.title("r vs success rate")
+        # plt.xlabel("r")
+        # plt.ylabel("success rate")
 
-                plt.legend(loc="upper left")
+        # plt.legend(loc="upper left")
 
-                # plt.xscale("log")
-                # # plt.yscale("log")
-                plt.tight_layout()
+        # plt.xscale("log")
+        # # plt.yscale("log")
 
-                f = f"{x_label}_{y_label}"
-                plt.savefig(f"{f}.png", dpi=100)
-                # plt.savefig(f"{f}.eps", format="eps", dpi=100)
-                plt.savefig(f"{f}.svg", format="svg", transparent=True)
-
-                plt.show()
+        # plt.savefig("plot.png", dpi=1000)
+        # plt.savefig("plot.eps", dpi=1000)
 
     def summarize(self, force=False):
         THRE0 = 0.6
@@ -319,18 +309,16 @@ class MyProcessRunner(ProcessRunner):
 
         # print(f"m {cfg2['m'][0]}, r {cfg2['r'][0]}")
         print(f"n {cfg2['n'][0]}")
-        plot_metric = 'max_dist'    # 'max_dist'    # min_loss, 'min_dist'
+        plot_metric = 'min_dist'    # 'max_dist'    # min_loss, 'min_dist'
         ms = self.cfg['m']
-        x_label = 'm'
-        xs = ms  # x-axis
-        # ds = self.cfg['d']
-        # ns = self.cfg['n']
-        # x_label = 'n'
-        # xs = ns  # x-axis
-
+        ds = self.cfg['d']
+        ns = self.cfg['n']
+        ps = self.cfg['p']
         update_methods = self.cfg['update_method']
         print(plot_metric, ms, update_methods)
-
+        xs = ps  # x-axis
+        file_name = 'ds'
+        x_label = 'k'
 
         plot_data = {}
         for update_method in update_methods:
@@ -340,10 +328,8 @@ class MyProcessRunner(ProcessRunner):
                 for cfg in cfgs2: # all results
                     key1 = cfg.keys()
                     key1v = cfg.values()
-                    # if x_label == 'm':
-                    if cfg['m'] != m or cfg['update_method'] != update_method: continue
-                    # if x_label == 'n':
-                    # if cfg['n'] != m or cfg['update_method'] != update_method: continue
+                    # if cfg['m'] != m or cfg['update_method'] != update_method: continue
+                    if cfg['d'] != m or cfg['update_method'] != update_method: continue
 
                     THRE = THRE0 * cfg["noise_scale"]
 
@@ -363,13 +349,15 @@ class MyProcessRunner(ProcessRunner):
 
         is_show = True
         if is_show:
-
-            y_label = plot_metric
-
             import matplotlib;
             # matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend; instead, writes files
             from matplotlib import pyplot as plt
-
+            if plot_metric == 'min_dist':
+                y_label = '$\\frac{1}{k}\sum||\\theta-\\theta^{*}||_2$'
+            elif plot_metric == 'max_dist':
+                y_label = '$max_{k}||\\theta-\\theta^{*}||_2$'
+            else:
+                y_label = plot_metric
             markers = ['*', '^', 'o']
             colors = ['g', 'b', 'purple']
             for _i, update_method in enumerate(update_methods):
@@ -388,7 +376,7 @@ class MyProcessRunner(ProcessRunner):
             # # plt.yscale("log")
             plt.tight_layout()
 
-            f = f"output/{x_label}_{y_label}"
+            f = f"output/{x_label}_{plot_metric}"
             plt.savefig(f"{f}.png", dpi=100)
             # plt.savefig(f"{f}.eps", format="eps", dpi=100)
             plt.savefig(f"{f}.svg", format="svg", transparent=True)

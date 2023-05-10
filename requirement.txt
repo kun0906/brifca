@@ -1,12 +1,16 @@
 
 scikit-learn==1.2.2
 scikit-learn-extra==0.3.0
-torch==2.0.0
-# pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-# installing torch by pip3 will have the issue: no nn Module in torch.nn.Module, so reinstall it by conda.
-# conda install pytorch torchvision torchaudio cpuonly -c pytorch
 matplotlib==3.7.1
 numpy==1.24.2
+scipy==1.10.1
+
+## install torch by conda in the cluster
+# conda install pytorch torchvision torchaudio cpuonly -c pytorch
+## duplicated instructions
+## torch==2.0.0
+## pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+## installing torch by pip3 will have the issue: no nn Module in torch.nn.Module, so reinstall it by conda.
 
 
 

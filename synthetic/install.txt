@@ -1,0 +1,37 @@
+
+# 1. log in
+ssh ky8517@tiger.princeton.edu
+
+# 2. Store the codes to /scratch/gpfs/ky8517/ifca
+cd /scratch/gpfs/ky8517/ifca/synthetic
+
+# 3. Load (/create) and activate python3
+module load anaconda3/2021.11
+# Create Python3, ignore it if you already have the environment
+#conda create --name py3104_ifca python=3.10.4
+conda activate py3104_ifca
+
+# 4. Install libraries. Ignore it if you already have done that.
+# pip3 install -r ../requirement.txt
+# Issue: Anaconda ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found
+# Soluation: export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/your/path/to/conda/env/lib
+#In my case, I just did:
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/.conda/envs/py3104_ifca/lib
+
+
+# 5. Submit your job
+cd /scratch/gpfs/ky8517/ifca/synthetic
+# mkdir output if it doesn't exist
+sbatch sbatch.sh
+# check the status of the job
+squeue -u ky8517
+
+
+# 6. sshfs
+# mkdir ifca if ifca doesn't exist on your laptop.
+# install sshfs: https://sbgrid.org/corewiki/faq-sshfs.md
+sshfs ky8517@tiger.princeton.edu:/scratch/gpfs/ky8517/ifca ifca
+
+
+
+

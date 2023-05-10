@@ -71,7 +71,7 @@ def plot_data(data_lst, cluster_assignment, is_show=False):
         if label is not None: title += f'{label}:'
         cnt += len(X)
         # print(f'j:{j}', colors[j], flush=True)
-        plt.scatter(X[:, 0], X[:, 1], c=[colors[j]] * len(y), label=label, alpha=0.5)
+        plt.scatter(X[:, 0], X[:, 1], c=[colors[j%len(colors)]] * len(y), label=label, alpha=0.5)
     title += f'{cnt}'
     plt.xlabel(f'X[:, 0]')
     plt.ylabel(f'X[:, 1]')
@@ -92,7 +92,7 @@ def plot_data(data_lst, cluster_assignment, is_show=False):
                 label = y_label[0]
             else:
                 label = None
-            plt.scatter(X[:, idx], y, c=[colors[j]] * len(y), label=label, alpha=0.5)
+            plt.scatter(X[:, idx], y, c=[colors[j%len(colors)]] * len(y), label=label, alpha=0.5)
         plt.xlabel(f'X[:, {idx}]')
         plt.ylabel(f'y')
         plt.legend()
@@ -175,7 +175,9 @@ class DatasetGenerate(object):
         ###################################################
         # generate data for each Byzantine machine
         params_b = []
-        p_b = 1  # only one distribution for all noise distribution
+        # p_b = 1  # only one distribution for all noise distribution
+        m_b = self.config['m_b']
+        p_b = m_b  # each Byzantine machine has one distribution
         for p_i in range(p_b):
             # loc = self.param_settings[p_i]
             while True:
@@ -185,7 +187,6 @@ class DatasetGenerate(object):
             params_b.append(param)
         print('Byzantine params(weights):', params_b)
         # generate dataset for each Byzantine machine
-        m_b = self.config['m_b']
         cluster_assignment_b = [m_i // int(np.ceil(m_b // p_b)) + p for m_i in
                                 range(m_b)]  # generate label for each Byzantine machine
         dataset['cluster_assignment'] = cluster_assignment + cluster_assignment_b

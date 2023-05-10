@@ -8,6 +8,7 @@ import pickle
 
 import torch
 import numpy as np
+import datetime
 
 from util import *
 
@@ -71,6 +72,8 @@ def get_config():
 
 if __name__ == '__main__':
     start_time = time.time()
+    print('start_time: ', datetime.datetime.now())
     main()
     duration = (time.time() - start_time)
+    print('end_time: ', datetime.datetime.now())
     print("---train cluster Ended in %0.2f hour (%.3f sec) " % (duration/float(3600), duration))

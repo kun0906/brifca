@@ -1,3 +1,11 @@
+V0.0.5: Each Byzantine machine has its distribution
+1. Each Byzantine machine has its distribution
+2. Update y_label in plot
+3. Reduce epoch=300 to 100
+4. Add datetime to gen_data_and_train_cluster.py
+5. Add install.txt and update requirement.txt 
+
+
 V0.0.4:Update trimmed means
 1. Update trimmed means in gradient_trimmed_mean()
     _tmp = torch.mean(grads[mask][:, i], dim=0)
