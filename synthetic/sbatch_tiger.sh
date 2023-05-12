@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=ifca         # create a short name for your job
+#SBATCH --job-name=10         # create a short name for your job
 #SBATCH --time=48:00:00          # total run time limit (HH:MM:SS)
 #SBATCH --output=output/output.txt
 #SBATCH --error=output/err.txt
@@ -34,8 +34,8 @@ pwd
 python3 -V
 
 # sshfs ky8517@tiger.princeton.edu:/scratch/gpfs/ky8517/ifca ifca
-PYTHONPATH='..' PYTHONUNBUFFERED=TRUE python3 run_all.py > 'output/log.txt' 2>&1
-#### sbatch ./sbatch.sh
+PYTHONPATH='..' PYTHONUNBUFFERED=TRUE python3 run_all_10.py > 'output/log_10.txt' 2>&1
+#### sbatch ./sbatch_della.sh
 #PYTHONPATH='..' PYTHONUNBUFFERED=TRUE python3 main_all.py > 'output/sh/log.txt' 2>&1  &
 # if you use & at the end of your command, your job cannot be seen by 'squeue -u'
 

@@ -20,10 +20,15 @@ parser.add_argument('--force', default=False,   # whether overwrite the previous
 parser.add_argument("--max-procs", type=int, default=-1)  # -1 for debugging
 parser.add_argument("--arr-size", type=int, default=-1)
 parser.add_argument("--arr-index", type=int, default=-1)
+parser.add_argument("-n", type=int, default=50)
+parser.add_argument("-d", type=int, default=2)
+parser.add_argument("--update_method", type=str, default='mean')
+parser.add_argument("--alg_method", type=str, default='proposed')
 args = parser.parse_args()
 
+OUT_DIR = 'output1'
 
-def main():
+def main(n=50, d=10, alg_method='baseline', update_method='mean'):
     max_procs = 4
 
     is_debugging = True
@@ -35,47 +40,49 @@ def main():
             "m": [200],  # number of total machines (Normal + Byzantine)
             'alpha': [0.05],  # percent of Byzantine machines
 
-            "n": [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
+            "n": [n],  # [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
 
-            "d": [20, 100, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
+            "d": [d], #[20, 100, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
 
             "noise_scale": [0.4472],  # standard deviation of noise/epsilon: sigma**2 = 0.2
 
             "r": [1.0],  # separation parameter for synthetic data generation
 
-            'update_method': ['mean', 'median', 'trimmed_mean'],  # ['mean', 'median', 'trimmed_mean'],  # gradient update methods for server
+            "alg_method": [alg_method], #   ['baseline', 'proposed'],
+
+            'update_method': [update_method], #['mean', 'median', 'trimmed_mean'],  # gradient update methods for server
             'beta': [0.05],  # trimmed means parameters
 
-            "data_seed": [v for v in range(0, 100, 10)],  # different seeds for data
+            "data_seed": [v for v in range(0, 100, 2)],  # different seeds for data
 
             "train_seed": [0],  # different seeds for training
 
             'lr': [0.01],  # different learning rates
         }
-    else:
-        cfg = {
-            "p": [5, 10],  # number of distributions/clusters
-
-            "m": [200],  # number of total machines (Normal + Byzantine)
-            'alpha': [0.05, 0.1],  # percent of Byzantine machines
-
-            "n": [50, 100, 200],  # number of data points per each machine
-
-            "d": [20, 500, 1000],  # different data dimensions
-
-            "noise_scale": [0.4472],  # standard deviation of noise/epsilon
-
-            "r": [1.0],  # separation parameter for synthetic data generation
-
-            'update_method': ['mean', 'median', 'trimmed_mean'], #gradient update methods for server
-            'beta': [0.05],  # trimmed means parameters
-
-            "data_seed": [v for v in range(0, 100, 20)],  # different seeds for data
-
-            "train_seed": [0],  # different seeds for training
-
-            'lr': [0.01],  # different learning rates
-        }
+    # else:
+    #     cfg = {
+    #         "p": [5, 10],  # number of distributions/clusters
+    #
+    #         "m": [200],  # number of total machines (Normal + Byzantine)
+    #         'alpha': [0.05, 0.1],  # percent of Byzantine machines
+    #
+    #         "n": [50, 100, 200],  # number of data points per each machine
+    #
+    #         "d": [20, 500, 1000],  # different data dimensions
+    #
+    #         "noise_scale": [0.4472],  # standard deviation of noise/epsilon
+    #
+    #         "r": [1.0],  # separation parameter for synthetic data generation
+    #
+    #         'update_method': ['mean', 'median', 'trimmed_mean'], #gradient update methods for server
+    #         'beta': [0.05],  # trimmed means parameters
+    #
+    #         "data_seed": [v for v in range(0, 100, 20)],  # different seeds for data
+    #
+    #         "train_seed": [0],  # different seeds for training
+    #
+    #         'lr': [0.01],  # different learning rates
+    #     }
 
     task = MyTask
     runner = MyProcessRunner(
@@ -86,16 +93,20 @@ def main():
     runner.setup()
 
     runner.run(force=args.force)
-
     runner.summarize(force=args.force)
+    for plot_metric in ['min_dist', 'max_dist', 'min_loss']:
+        # plot_metric = 'min_dist'  # 'max_dist'    # min_loss, 'min_dist'
+        runner.plot_res(plot_metric)
+    # runner.summarize(force=args.force)
     # runner.summarize(force=True)
+
 
 
 class MyProcessRunner(ProcessRunner):
     def summarize_old(self, force=False):
         THRE0 = 0.6
 
-        results_fname = 'output/results.pkl'
+        results_fname = f'{OUT_DIR}/results.pkl'
         if os.path.exists(results_fname) and not force:
             print('loading results from {}'.format(results_fname))
             with open(results_fname, 'rb') as f:
@@ -240,10 +251,10 @@ class MyProcessRunner(ProcessRunner):
         # plt.savefig("plot.png", dpi=1000)
         # plt.savefig("plot.eps", dpi=1000)
 
-    def summarize(self, force=False):
+    def summarize(self, force=False, plot_metric='min_dist'):
         THRE0 = 0.6
 
-        results_fname = 'output/results.pkl'
+        results_fname = f'{OUT_DIR}/results.pkl'
         if os.path.exists(results_fname):
             os.rename(results_fname, results_fname + '-old.pkl')
         if os.path.exists(results_fname) and not force:
@@ -260,8 +271,10 @@ class MyProcessRunner(ProcessRunner):
 
             for t_i, task in enumerate(self.tasks):
                 cfg = task.cfg
-                del cfg['project_dir']
-                del cfg['dataset_dir']
+                if 'project_dir' in cfg.keys():
+                    del cfg['project_dir']
+                if 'dataset_dir' in cfg.keys():
+                    del cfg['dataset_dir']
                 result_fname1 = task.procs[0].result_fname
                 # print(cfg, result_fname)
                 with open(result_fname1, 'rb') as f:
@@ -295,6 +308,11 @@ class MyProcessRunner(ProcessRunner):
 
             t1 = time.time()
             print(f'reading and saving results done in {t1 - t0:.3f}sec')
+    def plot_res(self, plot_metric):
+
+        results_fname = f'{OUT_DIR}/results.pkl'
+        with open(results_fname, 'rb') as f:
+            results = pickle.load(f)
 
         ###### processing ######
 
@@ -309,16 +327,16 @@ class MyProcessRunner(ProcessRunner):
 
         # print(f"m {cfg2['m'][0]}, r {cfg2['r'][0]}")
         print(f"n {cfg2['n'][0]}")
-        plot_metric = 'min_dist'    # 'max_dist'    # min_loss, 'min_dist'
+        # plot_metric = 'min_dist'    # 'max_dist'    # min_loss, 'min_dist'
         ms = self.cfg['m']
         ds = self.cfg['d']
         ns = self.cfg['n']
         ps = self.cfg['p']
         update_methods = self.cfg['update_method']
-        print(plot_metric, ms, update_methods)
-        xs = ps  # x-axis
+        xs = ds  # x-axis
         file_name = 'ds'
-        x_label = 'k'
+        x_label = 'd'
+        print(f'plot_metric: {plot_metric}, xs: {xs}, update_methods: {update_methods}')
 
         plot_data = {}
         for update_method in update_methods:
@@ -331,7 +349,7 @@ class MyProcessRunner(ProcessRunner):
                     # if cfg['m'] != m or cfg['update_method'] != update_method: continue
                     if cfg['d'] != m or cfg['update_method'] != update_method: continue
 
-                    THRE = THRE0 * cfg["noise_scale"]
+                    # THRE = THRE0 * cfg["noise_scale"]
 
                     success_rate = 0
                     vs = []
@@ -344,7 +362,7 @@ class MyProcessRunner(ProcessRunner):
                     print(update_method, m, cfg, vs)
                     mu, std = np.mean(vs), np.std(vs)
                     ys.append(mu)
-                    ys_erros.append(std)
+                    ys_erros.append(1.96*std/np.sqrt(len(vs)))  # std_error: 2*\sigma/sqrt(n)
             plot_data[update_method] = (xs, ys, ys_erros)
 
         is_show = True
@@ -376,12 +394,14 @@ class MyProcessRunner(ProcessRunner):
             # # plt.yscale("log")
             plt.tight_layout()
 
-            f = f"output/{x_label}_{plot_metric}"
+            f = f"{OUT_DIR}/n_{ns[0]}-{x_label}_{plot_metric}"
             plt.savefig(f"{f}.png", dpi=100)
             # plt.savefig(f"{f}.eps", format="eps", dpi=100)
-            plt.savefig(f"{f}.svg", format="svg", transparent=True)
-
+            # plt.savefig(f"{f}.svg", format="svg", transparent=True)
+            print(f)
             plt.show()
+            plt.clf()
+            plt.close()
 
         # # import ipdb; ipdb.set_trace()
         #
@@ -401,7 +421,7 @@ class MyTask(PRTask):
 
         env0 = {"OMP_NUM_THREADS": str(1)}
 
-        project_dir = os.path.join('output', dict_string(cfg))
+        project_dir = os.path.join(OUT_DIR, dict_string(cfg))
 
         cfg["project_dir"] = project_dir
         cfg["dataset_dir"] = project_dir
@@ -423,6 +443,7 @@ class MyTask(PRTask):
 
 if __name__ == '__main__':
     start_time = time.time()
-    main()
+    print(args)
+    main(n=args.n, d=args.d, update_method=args.update_method)
     duration = (time.time() - start_time)
     print("---run.py Ended in %0.2f hour (%.3f sec) " % (duration / float(3600), duration))

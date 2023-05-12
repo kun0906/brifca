@@ -1,3 +1,31 @@
+V0.0.6-2: Fix errors in geometric_kmeans()
+1. Fix errors
+    if inside_points.shape[0] == 0:
+        # msg = f'too large radius:{radius}'
+        # raise ValueError(msg)
+        new_centroids[j] = np.mean(cluster_j_points, axis=0)
+    else:
+        new_centroids[j] = np.mean(inside_points, axis=0)
+2. flatten the weights of SimplerLinear
+
+
+V0.0.6-1: Update geometric_kmeans()
+thres = np.quantile(_dists, q=0.95)
+inside_points = cluster_j_points[_dists < thres]
+
+V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+1. Submit mutli-jobs onto HPC in main_sbatch.py 
+2. Add train_cluster_baseline
+   for each cluster, 
+      1. Compute geometric_median
+      2. Only keep the points inside the hyperball with a radius
+      3. Compute the mean on the points kept. 
+3. Plot mult-metric plots and update std_error: 2*\sigma/sqrt(n)
+4. Move unused scripts to "dev"
+5. Add "scp" into install.txt 
+
+
+
 V0.0.5: Each Byzantine machine has its distribution
 1. Each Byzantine machine has its distribution
 2. Update y_label in plot

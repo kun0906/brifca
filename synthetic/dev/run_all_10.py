@@ -401,7 +401,7 @@ class MyTask(PRTask):
 
         env0 = {"OMP_NUM_THREADS": str(1)}
 
-        project_dir = os.path.join('output', dict_string(cfg))
+        project_dir = os.path.join('../output', dict_string(cfg))
 
         cfg["project_dir"] = project_dir
         cfg["dataset_dir"] = project_dir

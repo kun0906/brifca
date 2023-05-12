@@ -1,6 +1,7 @@
 
 # 1. log in
-ssh ky8517@tiger.princeton.edu
+#ssh ky8517@tiger.princeton.edu
+ssh ky8517@della.princeton.edu
 
 # 2. Store the codes to /scratch/gpfs/ky8517/ifca
 cd /scratch/gpfs/ky8517/ifca/synthetic
@@ -22,7 +23,9 @@ conda activate py3104_ifca
 # 5. Submit your job
 cd /scratch/gpfs/ky8517/ifca/synthetic
 # mkdir output if it doesn't exist
-sbatch sbatch.sh
+#sbatch sbatch.sh
+python3 main_sbatch.py
+
 # check the status of the job
 squeue -u ky8517
 
@@ -30,7 +33,16 @@ squeue -u ky8517
 # 6. sshfs
 # mkdir ifca if ifca doesn't exist on your laptop.
 # install sshfs: https://sbgrid.org/corewiki/faq-sshfs.md
+umount -f ifca
+sshfs ky8517@della.princeton.edu:/scratch/gpfs/ky8517/ifca ifca
 sshfs ky8517@tiger.princeton.edu:/scratch/gpfs/ky8517/ifca ifca
+sshfs zt6264@nobel.princeton.edu:/u/zt6264/ifca/synthetic ifca
+
+# 7 Scp
+# https://unix.stackexchange.com/questions/417428/copying-files-with-certain-extensions-with-scp
+scp ky8517@tiger.princeton.edu:'/scratch/gpfs/ky8517/ifca/synthetic/*.png' ~/
+
+
 
 
 

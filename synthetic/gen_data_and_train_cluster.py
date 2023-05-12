@@ -14,6 +14,7 @@ from util import *
 
 from generate_synthetic_dataset import *
 from train_cluster import *
+import train_cluster_baseline
 
 print = functools.partial(print, flush=True)
 
@@ -37,7 +38,10 @@ def main():
     dataset_generate.setup()
     dataset = dataset_generate.generate_dataset()
 
-    exp = TrainCluster(config)
+    if config['alg_method'] == 'baseline':
+        exp = train_cluster_baseline.TrainCluster(config)
+    else:
+        exp = TrainCluster(config)
     exp.setup(dataset= dataset)
     exp.run()
 

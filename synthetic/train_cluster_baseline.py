@@ -82,6 +82,54 @@ def plot_data(results, f='.png', self=None):
     plt.clf()
 
 
+def geometric_kmeans(points, k, init_method='random', radius=None, max_iterations=100, tolerance=1e-4, random_state=42):
+    from geom_median.numpy import compute_geometric_median  # NumPy API
+
+    if init_method == 'random':
+        r = np.random.RandomState(seed=random_state)
+        indices = r.choice(range(points.shape[0]), size=k, replace=False)
+        initial_centroids = points[indices, :]
+    else:
+        raise NotImplementedError(init_method)
+
+    new_centroids = np.copy(initial_centroids)
+
+    for i in range(max_iterations):
+        # Assign each point to the closest centroid
+        distances = np.sqrt(np.sum((points[:, np.newaxis, :] - new_centroids[np.newaxis, :, :]) ** 2, axis=2))
+        labels = np.argmin(distances, axis=1)
+
+        pre_centroids = np.copy(new_centroids)
+        # Update the centroids to be the mean of the points in each cluster
+        for j in range(k):
+            if sum(labels == j) == 0: # is it possible?
+                # new_centroids[j] use the previous centroid
+                continue
+            # if radius is None:
+            #     new_centroids[j] = np.mean(points[labels == j], axis=0)
+            # else:
+            cluster_j_points = points[labels == j]
+            # radius = C*\sigma*\sqrt(dim)
+            # https://github.com/krishnap25/geom_median/blob/main/README.md
+            _out = compute_geometric_median(cluster_j_points)
+            # Access the median via `out.median`, which has the same shape as the points, i.e., (d,)
+            geo_med = _out.median
+            _dists = np.sqrt(np.sum((cluster_j_points-geo_med)**2, axis=1))   # point - ball_center
+            thres = np.quantile(_dists, q=0.95)
+            # only keep the points inside the hyperball with the radius
+            inside_points = cluster_j_points[_dists < thres]
+            if inside_points.shape[0] == 0:
+                # msg = f'too large radius:{radius}'
+                # raise ValueError(msg)
+                new_centroids[j] = np.mean(cluster_j_points, axis=0)
+            else:
+                new_centroids[j] = np.mean(inside_points, axis=0)
+        if np.sum((new_centroids - pre_centroids) ** 2) / k < tolerance:
+            break
+
+    return new_centroids, labels
+
+
 class TrainCluster(object):
     def __init__(self, config):
         self.seed = config['train_seed']
@@ -89,6 +137,39 @@ class TrainCluster(object):
         self.config = config
 
         assert self.config['m'] % self.config['p'] == 0
+
+    def client_optimal_weights(self):
+
+        p = self.config['p']  # number of clusters/distributions
+        d = self.config['d']  # number of dimension of the dataset
+        m = self.config['m']  # number of total machines
+        n = self.config['n']  # number of data points of each machine
+        m_n = self.config['m_n']  # number of normal machines
+        m_b = self.config['m_b']  # number of byzantine machines
+
+        # for each machine (client), find p centroids
+        params = []
+        for m_i in range(m_n + m_b):  # use all the machines' data
+            (X, y, y_label) = self.dataset['data'][m_i]
+            xx = X.T@X
+            det = torch.linalg.det(xx)
+            if det > 0:
+                weights = torch.linalg.inv(xx) @ X.T @ y  # (X.T@X)^(-1) @X.T@y
+            else:
+                weights = torch.linalg.pinv(xx) @ X.T @ y
+            params.append(weights.numpy())  # only store the numpy array
+
+        return np.stack(params)
+
+    def server_clustering(self, weights_data, n_clusters, method='geometric_median'):
+        # the server find the clusters
+        if method == 'geometric_median':
+            centroids, cluster_labels = geometric_kmeans(weights_data, n_clusters, radius=None,
+                                                         random_state=self.random_state)
+        else:
+            return NotImplementedError(method)
+
+        return cluster_labels
 
     def setup(self, dataset=None):
         # print('seeding', self.seed)
@@ -126,19 +207,24 @@ class TrainCluster(object):
         results = []
         for epoch in range(num_epochs):
             if epoch == 0:
-                init_method = self.config['init_method']
-                if init_method == 'server_omniscient':
-                    self.initialize_weights()  # server do the initialization that close to ground-truth
-                # elif init_method == 'client_kmeans++' or init_method == 'client_random':
-                #     self.client_init_first(init_method=init_method)
-                else:
-                    raise NotImplementedError(f'{init_method}')
-                # self.warm_start()
+                # self.initialize_weights() # will change the shape of weights
+                p = self.config['p']  # number of distributions
+                for p_i in range(p): # change weights shape by yourself
+                    weight = self.models[p_i].weight()
+                    weight.data = weight.data.flatten()
+
+                # a) client compute closed-form weights and send them to the server
+                weights_np_arr = self.client_optimal_weights()
+                # b) server clusters the weights with geometric Kmeans
+                p = self.config['p']  # number of clusters/distributions
+                cluster_labels = self.server_clustering(weights_np_arr, n_clusters=p, method='geometric_median')
+                print(collections.Counter(cluster_labels))
+
             else:
                 self.epoch = epoch
 
                 # training phase
-                result = self.train(lr=lr)
+                result = self.train(lr, cluster_labels)
 
                 result['epoch'] = epoch
                 results.append(result)
@@ -199,14 +285,13 @@ class TrainCluster(object):
         else:
             return False
 
-    def train(self, lr):
+    def train(self, lr, cluster_labels):
         p = self.config['p']  # number of clusters/distributions
         d = self.config['d']  # number of dimension of the dataset
         m = self.config['m']  # number of total machines
         n = self.config['n']  # number of data points of each machine
         m_n = self.config['m_n']  # number of normal machines
         m_b = self.config['m_b']  # number of byzantine machines
-
 
         result = {}
 
@@ -220,47 +305,22 @@ class TrainCluster(object):
         # Clients:
         # for each machine, compute the losses and grads of all distributions/clusters (we need the labels)
         for m_i in range(m_n + m_b):
-            for p_i in range(p):
-                (X, y, y_label) = self.dataset['data'][m_i]
-                if flag_machines[m_i]:  # y_label[0].startswith('normal'):  # Normal loss
-                    loss_val, grad = calculate_loss_grad(self.models[p_i], self.criterion, X, y) # just compute the grads, no updates
-                    # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
-                else:  # Byzantine loss
-                    tmp_model = copy.deepcopy(self.models[p_i])
-                    ws = tmp_model.weight()
-                    ws.data = 3 * ws.data
-                    loss_val, grad = calculate_loss_grad(tmp_model, self.criterion, X, y)
-                    # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
-                    # loss_val, grad = 0, 0
-                losses[(m_i, p_i)] = loss_val
-                grads[(m_i, p_i)] = grad
-                # print(m_i, p_i, self.models[p_i].weight())
-
-        # calculate scores
-        scores = {}
-        for m_i in range(m_n + m_b):
-            # if not flag_machines[m_i]: continue  # only for normal machines
-
-            machine_losses = [losses[(m_i, p_i)] for p_i in range(p)]  # for each machine, find all "p" losses
-
-            if self.config['score'] == 'set':
-                min_p_i = np.argmin(
-                    machine_losses)  # for each machine, find the distribution that has the minimal loss.
-                for p_i in range(p):
-                    if p_i == min_p_i:  # if there are more than p that has the same min_p_i, does it effect the final results?
-                        scores[(m_i, p_i)] = 1  # assign the minimal distribution to 1.
-                    else:
-                        scores[(m_i, p_i)] = 0
-
-            elif self.config['score'] == 'em':
-
-                from scipy.special import softmax
-                softmaxed_loss = softmax(machine_losses)
-                for p_i in range(p):
-                    scores[(m_i, p_i)] = softmaxed_loss[p_i]
-
-            else:
-                assert self.config['score'] in ['set', 'em']
+            p_i = cluster_labels[m_i]
+            (X, y, y_label) = self.dataset['data'][m_i]
+            if flag_machines[m_i]:  # y_label[0].startswith('normal'):  # Normal loss
+                loss_val, grad = calculate_loss_grad(self.models[p_i], self.criterion, X,
+                                                     y)  # just compute the grads, no updates
+                # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
+            else:  # Byzantine loss
+                tmp_model = copy.deepcopy(self.models[p_i])
+                ws = tmp_model.weight()
+                ws.data = 3 * ws.data
+                loss_val, grad = calculate_loss_grad(tmp_model, self.criterion, X, y)
+                # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
+                # loss_val, grad = 0, 0
+            losses[(m_i, p_i)] = loss_val
+            grads[(m_i, p_i)] = grad
+            # print(m_i, p_i, self.models[p_i].weight())
 
         # Server:
         # apply gradient update at server (here we only update normal machines)
@@ -268,31 +328,20 @@ class TrainCluster(object):
         for p_i in range(p):
             # find which machine is assigned to p_i. If scores([m_i, p_i]) == 1, m_i is assigned to p_i;
             # otherwise, m_i is not.
-            cluster_scores = [scores[(m_i, p_i)] for m_i in range(m_n + m_b)]
-            if sum(cluster_scores) == 0:    # Kun: if there is no machine assigned to p_i, we randomly select a machine.
-                # print(cluster_grads)
-                _idx = np.random.choice(m_n+m_b, size=1)[0]
-                for j in range(p):
-                    if j != p_i: scores[(_idx, j)] = 0  # assign the other value to 0 for this machine.
-                scores[(_idx, p_i)] = p_i
-                cluster_scores = [scores[(_idx, p_i)]]
-                cluster_grads = [grads[(_idx, p_i)]]
-                print(p_i, _idx, cluster_scores, cluster_grads)
-            else:
-                cluster_grads = [grads[(m_i, p_i)] for m_i in range(m_n + m_b)]
-            # cluster_scores = [scores[(m_i, p_i)] for m_i in range(m_n + m_b) if flag_machines[m_i]]
-            # cluster_grads = [grads[(m_i, p_i)] for m_i in range(m_n + m_b) if flag_machines[m_i]]
+            cluster_scores = [1 for m_i in range(m_n + m_b) if p_i == cluster_labels[m_i]]
+            # if sum(cluster_scores) == 0: is it possible?
+            cluster_grads = [grads[(m_i, p_i)] for m_i in range(m_n + m_b) if p_i == cluster_labels[m_i]]
 
             self.models[p_i].zero_grad()
             weight = self.models[p_i].weight()
 
             update_method = self.config['update_method']
-            if update_method == 'mean': #coordinate_wise_mean
+            if update_method == 'mean':  # coordinate_wise_mean
                 # average the grads
                 tmp = gradient_update(cluster_scores, cluster_grads)
-            elif update_method == 'median': # coordinate_wise_median
+            elif update_method == 'median':  # coordinate_wise_median
                 tmp = gradient_update_median(cluster_scores, cluster_grads)  # should use "median"?
-            elif update_method == 'trimmed_mean':   # trimmed_mean
+            elif update_method == 'trimmed_mean':  # trimmed_mean
                 beta = self.config['beta']  # parameter for trimmed mean
                 tmp = gradient_trimmed_mean(cluster_scores, cluster_grads, beta)
             else:
@@ -300,7 +349,7 @@ class TrainCluster(object):
 
             weight.data -= lr * tmp
             # normalize the weight
-            # weight.data = weight.data/torch.linalg.norm(weight.data, 2)
+            weight.data = weight.data / torch.linalg.norm(weight.data, 2)
             weights.append(weight.detach().numpy())
 
         # Client:
@@ -309,37 +358,21 @@ class TrainCluster(object):
         cluster_assignment = []
         for m_i in range(m_n + m_b):
             # if not flag_machines[m_i]: continue  # only normal machines
-            machine_losses = [losses[(m_i, p_i)] for p_i in range(p)]
+            machine_losses = [losses[(m_i, p_i)] for p_i in range(p) if p_i == cluster_labels[m_i]] # only one loss
             min_loss = np.min(machine_losses)  # for each machine, find the minimal loss
             min_losses.append(min_loss)
 
-            machine_scores = [scores[(m_i, p_i)] for p_i in range(p)]
-            assign = np.argmax(machine_scores)  # find the distribution/cluster label
-
-            cluster_assignment.append(assign)
-
         result["min_loss"] = np.mean(min_losses)  # average the minimal losses
         result["min_losses"] = min_losses
-        print(collections.Counter(cluster_assignment))
-        cluster_assignment_ct = [0 for p_i in range(p)]
-        cluster_assignment_name_ct = {}
-        for m_i in range(m_n + m_b):
-            cluster_assignment_ct[cluster_assignment[m_i]] += 1  # for each cluster/distribution, compute the size.
-            (X, y, y_label) = self.dataset['data'][m_i]
-            key = cluster_assignment[m_i]  # each machine has only one unique label
-            if key not in cluster_assignment_name_ct.keys():
-                cluster_assignment_name_ct[key]=[y_label[0]]
-            else:
-                cluster_assignment_name_ct[key].append(y_label[0])
-            # if flag_machines[m_i]:  # normal machine
-            #     cluster_assignment_ct[cluster_assignment[m_i]] += 1  # for each cluster/distribution, compute the size.
-            # else:  # random assign the machine to one cluster, should I control the random state?
-            #     r = np.random.RandomState(seed=m_i)
-            #     idx = r.choice(range(p), size=1, replace=True)[0]  # random choose value from [0, p)
-            #     cluster_assignment_ct[idx] += 1
+        tmp = collections.Counter(cluster_labels)
+        cluster_assignment_ct = list(tmp.values())  # [0 for p_i in range(p)]
+        cluster_assignment_name_ct = tmp
+        print(cluster_assignment_name_ct)
 
         result["cluster_assignment_ct"] = cluster_assignment_ct
-        result["cluster_assignment_name_ct"] = [f'{k}:{collections.Counter(vs)}' for k,vs in cluster_assignment_name_ct.items()]
+        # result["cluster_assignment_name_ct"] = [f'{k}:{collections.Counter(vs)}' for k, vs in
+        #                                         cluster_assignment_name_ct.items()]
+        result["cluster_assignment_name_ct"] = cluster_assignment_name_ct
         # record the total loss for the updated weights and ground-truth for plotting or analyzing.
         closest_cluster = [-1 for _ in range(p)]
         min_dists = []
@@ -372,12 +405,12 @@ class TrainCluster(object):
             weight = self.models[p_i].weight()  # uniform(-, +)
             d = weight.shape[1]
             # initialize the weights are close to ground-truth
-            # param = torch.tensor(np.random.binomial(1, 0.5, size=(1, d)).astype(np.float32)) * 1.0    # wrong initalization
+            # param = torch.tensor(np.random.binomial(1, 0.5, size=(1, d)).astype(np.float32)) * 1.0    # wrong initialization
             while True:
                 # n = 1 is Bernoulli distribution
                 param = torch.tensor(np.random.binomial(n=1, p=0.5, size=(d)).astype(np.float32)) * self.config['r']
                 if torch.linalg.norm(param, 2) > 0: break
-            param = param/torch.linalg.norm(param, 2)  # l2 norm
+            param = param / torch.linalg.norm(param, 2)  # l2 norm
             weight.data = param  # initialize weights as [0, 1]
             print(f'initial weights ({p_i}th cluster):', weight.data)
 
@@ -455,7 +488,7 @@ def calculate_loss_grad(model, criterion, X, y):
     y_target = model(X)
     loss = criterion(y, y_target)
     model.zero_grad()
-    loss.backward() # just compute the grads, no any updates.
+    loss.backward()  # just compute the grads, no any updates.
 
     loss_value = loss.item()
     weight = model.weight()
@@ -482,11 +515,11 @@ def gradient_update_median(scores, grads):
     scores = np.asarray(scores)
     grads = torch.stack(grads)
     mask = (scores == 1)
-    if sum(mask) ==0:
+    if sum(mask) == 0:
         tmp = torch.zeros_like(grads[0])
     elif sum(mask) == 1:
         tmp = grads[mask][0]
-    else: # sum(mask) > 1:
+    else:  # sum(mask) > 1:
         tmp, indices = torch.median(grads[mask], dim=0)
 
     return tmp
@@ -505,9 +538,9 @@ def gradient_trimmed_mean(scores, grads, beta):
         tmp = grads[mask][0]
     else:  # sum(mask) > 1:
         # remove beta percent data and then compute the trimmed mean
-        d = grads.shape[1] # dimensions
+        d = grads.shape[1]  # dimensions
         tmp = torch.zeros_like(grads[0])
-        for i in range(d): # for each dimension
+        for i in range(d):  # for each dimension
             ts = sorted([(v, v[i]) for v in grads[mask]], key=lambda vs: vs[1], reverse=False)
             m = int(np.floor(len(ts) * beta))  # remove the m smallest and m biggest grads from ts
             if 2 * m >= len(ts):
