@@ -28,7 +28,7 @@ args = parser.parse_args()
 
 OUT_DIR = 'output1'
 
-def main(n=50, d=10, alg_method='baseline', update_method='mean'):
+def main(n=50, d=10, alg_method='baseline', update_method='trimmed_mean'):
     max_procs = 4
 
     is_debugging = True
@@ -53,7 +53,7 @@ def main(n=50, d=10, alg_method='baseline', update_method='mean'):
             'update_method': [update_method], #['mean', 'median', 'trimmed_mean'],  # gradient update methods for server
             'beta': [0.05],  # trimmed means parameters
 
-            "data_seed": [v for v in range(0, 100, 2)],  # different seeds for data
+            "data_seed": [v for v in range(0, 100, 50)],  # different seeds for data
 
             "train_seed": [0],  # different seeds for training
 

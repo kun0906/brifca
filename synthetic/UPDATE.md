@@ -1,3 +1,9 @@
+V0.0.7: Add init_method=true for geometric_median()
+1. Add init_method=true for geometric_median()
+2. Add verbose and don't print the weights 
+3. run K=15 and m = 600
+
+
 V0.0.6-2: Fix errors in geometric_kmeans()
 1. Fix errors
     if inside_points.shape[0] == 0:

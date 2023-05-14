@@ -123,7 +123,7 @@ class DatasetGenerate(object):
         p = int(self.config['p'])
         self.param_settings = [-p + 1 + 2 * i for i in range(p)]
 
-    def generate_dataset(self):
+    def generate_dataset(self, verbose=0):
         p = self.config['p']
         d = self.config['d']
         m = self.config['m']    # Number of total machines = m_n (normal) + m_b (byzantine)
@@ -149,8 +149,8 @@ class DatasetGenerate(object):
             # param[p_i] = 10
             # param = torch.tensor(param.astype(np.float32)) # for debugging
             params.append(param)  # generate data parameters for each distribution/cluster
-        print('Normal params(weights):', params)
-        dataset['params'] = params
+        if verbose >= 20: print('Normal params(weights):', params)
+        dataset['params'] = torch.stack(params)
         dataset['data'] = []
 
         # generate dataset for each normal machine
@@ -185,7 +185,7 @@ class DatasetGenerate(object):
                 if torch.linalg.norm(param, 2) > 0: break
             param = 3 * param / torch.linalg.norm(param, 2)  # l2 norm = 3
             params_b.append(param)
-        print('Byzantine params(weights):', params_b)
+        if verbose >= 20: print('Byzantine params(weights):', params_b)
         # generate dataset for each Byzantine machine
         cluster_assignment_b = [m_i // int(np.ceil(m_b // p_b)) + p for m_i in
                                 range(m_b)]  # generate label for each Byzantine machine
@@ -204,7 +204,7 @@ class DatasetGenerate(object):
 
             dataset['data'].append((data_X, data_y, data_y_label))
 
-        plot_data(dataset['data'], dataset['cluster_assignment'])
+        if verbose >= 20: plot_data(dataset['data'], dataset['cluster_assignment'])
 
         self.dataset = dataset
         return dataset

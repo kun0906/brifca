@@ -82,13 +82,16 @@ def plot_data(results, f='.png', self=None):
     plt.clf()
 
 
-def geometric_kmeans(points, k, init_method='random', radius=None, max_iterations=100, tolerance=1e-4, random_state=42):
+def geometric_kmeans(points, true_centroids, k, init_method='random', radius=None,
+                     max_iterations=100, tolerance=1e-4, random_state=42):
     from geom_median.numpy import compute_geometric_median  # NumPy API
 
     if init_method == 'random':
         r = np.random.RandomState(seed=random_state)
         indices = r.choice(range(points.shape[0]), size=k, replace=False)
         initial_centroids = points[indices, :]
+    elif init_method == 'true':
+        initial_centroids = true_centroids[:]
     else:
         raise NotImplementedError(init_method)
 
@@ -161,10 +164,10 @@ class TrainCluster(object):
 
         return np.stack(params)
 
-    def server_clustering(self, weights_data, n_clusters, method='geometric_median'):
+    def server_clustering(self, weights_data, true_centroids, n_clusters, method='geometric_median'):
         # the server find the clusters
         if method == 'geometric_median':
-            centroids, cluster_labels = geometric_kmeans(weights_data, n_clusters, radius=None,
+            centroids, cluster_labels = geometric_kmeans(weights_data,true_centroids, n_clusters, radius=None,
                                                          random_state=self.random_state)
         else:
             return NotImplementedError(method)
@@ -217,7 +220,9 @@ class TrainCluster(object):
                 weights_np_arr = self.client_optimal_weights()
                 # b) server clusters the weights with geometric Kmeans
                 p = self.config['p']  # number of clusters/distributions
-                cluster_labels = self.server_clustering(weights_np_arr, n_clusters=p, method='geometric_median')
+                true_centroids = copy.deepcopy(self.dataset['params'].numpy())
+                cluster_labels = self.server_clustering(weights_np_arr, true_centroids = true_centroids,
+                                            n_clusters=p, method='geometric_median')
                 print(collections.Counter(cluster_labels))
 
             else:
@@ -238,7 +243,7 @@ class TrainCluster(object):
                 print('\tcluster_size:', result["cluster_assignment_ct"],
                       ', pred_true:', result["cluster_assignment_name_ct"],
                       '\n\tcluster_label(closest_cluster):', result["closest_cluster"],
-                      ', weights:', result['weights'])
+                      ', weights:', result['weights'][:5])
 
                 if LR_DECAY and self.determine_lr_decay(result):
                     # lr = lr * 0.1
@@ -412,7 +417,7 @@ class TrainCluster(object):
                 if torch.linalg.norm(param, 2) > 0: break
             param = param / torch.linalg.norm(param, 2)  # l2 norm
             weight.data = param  # initialize weights as [0, 1]
-            print(f'initial weights ({p_i}th cluster):', weight.data)
+            # print(f'initial weights ({p_i}th cluster):', weight.data)
 
     def warm_start(self):
         # use the ground-truth to initialize, i.e., set the initialization to values that are close to ground-truth.

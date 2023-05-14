@@ -13,7 +13,7 @@ def generate_sh():
 
     cnt = 0
     for n in [100]:
-        for d in [20, 50, 100, 200, 500, 1000]:
+        for d in [20, 50, 100, 200, 500]:
             for update_method in ['mean', 'median', 'trimmed_mean']:
                 for alg_method in ['proposed', 'baseline']:
                     cnt += 1
@@ -46,14 +46,14 @@ PYTHONPATH='..' PYTHONUNBUFFERED=TRUE python3 run_all.py -n {n} -d {d} --update_
 wait
 echo 'done'     
     """
-                out_sh = f'{out_dir}/{name}.sh'
-                # print(out_sh)
-                with open(out_sh, 'w') as f:
-                    f.write(s)
+                    out_sh = f'{out_dir}/{name}.sh'
+                    # print(out_sh)
+                    with open(out_sh, 'w') as f:
+                        f.write(s)
 
-                cmd = f'sbatch {out_sh}'
-                ret = subprocess.run(cmd, shell=True)
-                print(cmd, ret)
+                    cmd = f'sbatch {out_sh}'
+                    ret = subprocess.run(cmd, shell=True)
+                    print(cmd, ret)
             
     return cnt
 

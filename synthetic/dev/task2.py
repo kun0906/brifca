@@ -6,7 +6,8 @@
     https://stackoverflow.com/questions/58648721/how-to-get-slurm-task-id-in-program
 
 """
-
+import datetime
+print(datetime.datetime.now())
 import numpy as np
 import subprocess
 import os
@@ -32,8 +33,9 @@ print(f'cpu_cores: {cpu_cores}')
 
 d = 100
 res = np.eye(d)
-for i in range(100000):
+for i in range(1000000):
     X_i = np.eye(d) * i
     res = X_i @ res
 
 print('finish')
+print(datetime.datetime.now())

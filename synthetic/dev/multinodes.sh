@@ -10,9 +10,11 @@
 ##SBATCH --mail-type=begin        # send email when job begins
 #SBATCH --mail-type=end          # send email when job ends
 #SBATCH --mail-type=fail         # send mail if job fails
-#SBATCH --mail-user=ky8517@princeton.edu
+## SBATCH --mail-user=ky8517@princeton.edu
 
 #export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+date
 
 module purge
 cd /scratch/gpfs/ky8517/ifca/synthetic/dev
@@ -20,12 +22,14 @@ module load anaconda3/2021.11
 
 python3 -V
 
-#srun python3 task1.py > task1.txt 2>&1 &
-#srun python3 task2.py > task2.txt 2>&1 &
+srun -n 1 --ntasks 1 python3 task1.py > task1.txt 2>&1
+srun -n 1 --ntasks 3 python3 task2.py > task2.txt 2>&1
 
 # only run on one node
 #python3 task1.py > task1.txt 2>&1 &
 #python3 task2.py > task2.txt 2>&1 &
 
-wait
+#wait
+
+date
 echo 'done'
