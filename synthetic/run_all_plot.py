@@ -20,17 +20,17 @@ parser.add_argument('--force', default=False,   # whether overwrite the previous
 parser.add_argument("--max-procs", type=int, default=-1)  # -1 for debugging
 parser.add_argument("--arr-size", type=int, default=-1)
 parser.add_argument("--arr-index", type=int, default=-1)
-parser.add_argument("-n", type=int, default=100)
-parser.add_argument("-d", type=int, default=20)
-parser.add_argument("--update_method", type=str, default='trimmed_mean')
+parser.add_argument("-n", type=int, default=50)
+parser.add_argument("-d", type=int, default=2)
+parser.add_argument("--update_method", type=str, default='mean')
 parser.add_argument("--alg_method", type=str, default='baseline')
 args = parser.parse_args()
 
-# OUT_DIR = 'output-K_5-Baseline-TrueCentroids'
-OUT_DIR = 'output-K_15'
+OUT_DIR = 'output_true_label'
+OUT_DIR = 'output_60label'
 
-def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
-    max_procs = 30    # 4
+def main(n=50):
+    max_procs = 30
 
     is_debugging = True
     if is_debugging:
@@ -43,18 +43,18 @@ def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
 
             "n": [n],  # [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
 
-            "d": [d], #[20, 100, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
+            "d": [20, 50, 100, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
 
             "noise_scale": [0.4472],  # standard deviation of noise/epsilon: sigma**2 = 0.2
 
             "r": [1.0],  # separation parameter for synthetic data generation
 
-            "alg_method": [alg_method], #   ['baseline', 'proposed'],
+            "alg_method": ['baseline'], #   ['baseline', 'proposed'],
 
-            'update_method': [update_method], #['mean', 'median', 'trimmed_mean'],  # gradient update methods for server
+            'update_method': ['trimmed_mean'], #gradient update methods for server, 'mean', 'median',
             'beta': [0.05],  # trimmed means parameters
 
-            "data_seed": [v for v in range(0, 100, 50)],  # different seeds for data range(0, 100, 50)
+            "data_seed": [v for v in range(0, 100, 151)],  # different seeds for data
 
             "train_seed": [0],  # different seeds for training
 
@@ -97,7 +97,7 @@ def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
     runner.summarize(force=args.force)
     for plot_metric in ['min_dist', 'max_dist', 'min_loss']:
         # plot_metric = 'min_dist'  # 'max_dist'    # min_loss, 'min_dist'
-        runner.plot_res(plot_metric)
+        runner.plot_res(plot_metric=plot_metric)
     # runner.summarize(force=args.force)
     # runner.summarize(force=True)
 
@@ -309,6 +309,7 @@ class MyProcessRunner(ProcessRunner):
 
             t1 = time.time()
             print(f'reading and saving results done in {t1 - t0:.3f}sec')
+
     def plot_res(self, plot_metric):
 
         results_fname = f'{OUT_DIR}/results.pkl'
@@ -445,6 +446,7 @@ class MyTask(PRTask):
 if __name__ == '__main__':
     start_time = time.time()
     print(args)
-    main(n=args.n, d=args.d, alg_method=args.alg_method, update_method=args.update_method)
+    for n in [100]: #[50, 100, 500]:
+        main(n)
     duration = (time.time() - start_time)
     print("---run.py Ended in %0.2f hour (%.3f sec) " % (duration / float(3600), duration))

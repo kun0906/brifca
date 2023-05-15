@@ -15,7 +15,7 @@ def generate_sh():
     for n in [100]:
         for d in [20, 50, 100, 200, 500]:
             for update_method in ['mean', 'median', 'trimmed_mean']:
-                for alg_method in ['proposed', 'baseline']:
+                for alg_method in ['proposed']:
                     cnt += 1
                     name = f"n_{n}-d_{d}-{update_method}-{alg_method}"
                     hh, mm = divmod(cnt, 60)

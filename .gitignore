@@ -128,3 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /synthetic/output/
+/synthetic/output/
+/synthetic/output-K_5-Baseline-TrueCentroids/
+/synthetic/output_60label/
+/synthetic/output_true_label/
+/synthetic/plots/

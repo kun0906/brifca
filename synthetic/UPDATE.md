@@ -1,3 +1,10 @@
+V0.0.8: Update geometric_median()
+1. Add init_method=true_weights for geometric_median()
+2. Add init_method=true_label for geometric_median()
+3. Add init_method=60label for geometric_median()
+4. Add alg_method=args.alg_method into main(n=args.n, d=args.d, update_method=args.update_method)
+5. Update max_procs = 30
+
 V0.0.7: Add init_method=true for geometric_median()
 1. Add init_method=true for geometric_median()
 2. Add verbose and don't print the weights 
