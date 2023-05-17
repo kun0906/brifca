@@ -11,8 +11,17 @@ import pickle
 import copy
 
 import numpy as np
+import psutil
 
 from process_runner import *
+import multiprocessing
+n_cpucores1 = multiprocessing.cpu_count()
+n_cpucores = psutil.cpu_count(logical = False)
+# os.cpu_count() returns the number of logical processors within the machines CPU, also known as threads.
+# If it returns 8 then your machine has 8 threads, not cores.
+# https://stackoverflow.com/questions/63557881/why-my-cpu-core-number-is-2-but-use-multiprocessing-cpu-count-get-4
+print(f'n_cpucores: {n_cpucores1}, {os.cpu_count()}, {psutil.cpu_count(logical = False)}, {psutil.cpu_count(logical= True)}')
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--force', default=False,   # whether overwrite the previous results or not?
@@ -20,14 +29,17 @@ parser.add_argument('--force', default=False,   # whether overwrite the previous
 parser.add_argument("--max-procs", type=int, default=-1)  # -1 for debugging
 parser.add_argument("--arr-size", type=int, default=-1)
 parser.add_argument("--arr-index", type=int, default=-1)
-parser.add_argument("-n", type=int, default=50)
-parser.add_argument("-d", type=int, default=2)
-parser.add_argument("--update_method", type=str, default='mean')
+# parser.add_argument("-n", type=int, default=100)
+# parser.add_argument("-d", type=int, default=2)
+parser.add_argument("-p", type=int, default=5)
+parser.add_argument("-m", type=int, default=200)
+parser.add_argument("--update_method", type=str, default='trimmed_mean')
 parser.add_argument("--alg_method", type=str, default='baseline')
 args = parser.parse_args()
 
 OUT_DIR = 'output_true_label'
-OUT_DIR = 'output_60label'
+# OUT_DIR = 'output_60label'
+# OUT_DIR = 'output_random'
 
 def main(n=50):
     max_procs = 30
@@ -36,25 +48,25 @@ def main(n=50):
     if is_debugging:
         # Note that the last three parameters must be "data_seed, train_seed, and lr"
         cfg = {
-            "p": [15],  # number of distributions/clusters
+            "p": [args.p],  # number of distributions/clusters
 
-            "m": [600],  # number of total machines (Normal + Byzantine)
+            "m": [args.m],  # number of total machines (Normal + Byzantine)
             'alpha': [0.05],  # percent of Byzantine machines
 
             "n": [n],  # [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
 
-            "d": [20, 50, 100, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
+            "d": [20, 50, 100, 150, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
 
             "noise_scale": [0.4472],  # standard deviation of noise/epsilon: sigma**2 = 0.2
 
             "r": [1.0],  # separation parameter for synthetic data generation
 
-            "alg_method": ['baseline'], #   ['baseline', 'proposed'],
+            "alg_method": [args.alg_method], #   ['baseline', 'proposed'],
 
-            'update_method': ['trimmed_mean'], #gradient update methods for server, 'mean', 'median',
+            'update_method': [args.update_method], #gradient update methods for server, 'mean', 'median','trimmed_mean'
             'beta': [0.05],  # trimmed means parameters
 
-            "data_seed": [v for v in range(0, 100, 151)],  # different seeds for data
+            "data_seed": [v for v in range(0, 100, 2)],  # different seeds for data
 
             "train_seed": [0],  # different seeds for training
 

@@ -9,10 +9,18 @@ import json
 import time
 import pickle
 import copy
+import psutil
 
 import numpy as np
 
 from process_runner import *
+import multiprocessing
+n_cpucores1 = multiprocessing.cpu_count()
+n_cpucores = psutil.cpu_count(logical = False)
+# os.cpu_count() returns the number of logical processors within the machines CPU, also known as threads.
+# If it returns 8 then your machine has 8 threads, not cores.
+# https://stackoverflow.com/questions/63557881/why-my-cpu-core-number-is-2-but-use-multiprocessing-cpu-count-get-4
+print(f'n_cpucores: {n_cpucores1}, {os.cpu_count()}, {psutil.cpu_count(logical = False)}, {psutil.cpu_count(logical= True)}')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--force', default=False,   # whether overwrite the previous results or not?
@@ -30,7 +38,7 @@ args = parser.parse_args()
 OUT_DIR = 'output-K_15'
 
 def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
-    max_procs = 30    # 4
+    max_procs = min(30, n_cpucores)    # 4
 
     is_debugging = True
     if is_debugging:
@@ -54,7 +62,7 @@ def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
             'update_method': [update_method], #['mean', 'median', 'trimmed_mean'],  # gradient update methods for server
             'beta': [0.05],  # trimmed means parameters
 
-            "data_seed": [v for v in range(0, 100, 50)],  # different seeds for data range(0, 100, 50)
+            "data_seed": [v for v in range(0, 100, 2)],  # different seeds for data range(0, 100, 50)
 
             "train_seed": [0],  # different seeds for training
 

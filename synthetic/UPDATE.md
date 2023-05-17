@@ -1,3 +1,8 @@
+V0.0.9: Get n_cpu_cores by psutil 
+1. Update max_procs = min(30, n_cpu_cores)
+2. Add plot_results 
+
+
 V0.0.8: Update geometric_median()
 1. Add init_method=true_weights for geometric_median()
 2. Add init_method=true_label for geometric_median()

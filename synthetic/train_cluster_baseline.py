@@ -87,7 +87,7 @@ def unison_shuffled_copies(a, b, rng):
     p = rng.permutation(len(a))
     return a[p], b[p]
 
-def geometric_kmeans(points, true_weights, k, init_method='60label', radius=None, labels = None,
+def geometric_kmeans(points, true_weights, k, init_method='true_label', radius=None, labels = None,
                      max_iterations=100, tolerance=1e-4, random_state=42):
     from geom_median.numpy import compute_geometric_median  # NumPy API
 
