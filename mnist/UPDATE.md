@@ -1,3 +1,9 @@
+
+V0.1.1: Add small_set_mnist 
+1. Sample a subset of MNIST
+2. Update trimmed_mean with scipy 
+
+
 V0.1.0: Update train_cluster_mnist.py in "mnist"
 1. Add Byzantine machines 
 2. Update "the way of weight update" on the server

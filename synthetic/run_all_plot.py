@@ -37,9 +37,11 @@ parser.add_argument("--update_method", type=str, default='trimmed_mean')
 parser.add_argument("--alg_method", type=str, default='baseline')
 args = parser.parse_args()
 
-OUT_DIR = 'output_true_label'
+# OUT_DIR = 'output_true_label'
 # OUT_DIR = 'output_60label'
 # OUT_DIR = 'output_random'
+
+OUT_DIR = f'output-K_{args.p}-{args.alg_method}-alpha_01-beta_01'
 
 def main(n=50):
     max_procs = 30
@@ -51,11 +53,11 @@ def main(n=50):
             "p": [args.p],  # number of distributions/clusters
 
             "m": [args.m],  # number of total machines (Normal + Byzantine)
-            'alpha': [0.05],  # percent of Byzantine machines
+            'alpha': [0.1],  # 0.05, percent of Byzantine machines
 
-            "n": [n],  # [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
+            "n": [100],  # [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
 
-            "d": [20, 50, 100, 150, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
+            "d": [20, 50, 100, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
 
             "noise_scale": [0.4472],  # standard deviation of noise/epsilon: sigma**2 = 0.2
 
@@ -63,8 +65,8 @@ def main(n=50):
 
             "alg_method": [args.alg_method], #   ['baseline', 'proposed'],
 
-            'update_method': [args.update_method], #gradient update methods for server, 'mean', 'median','trimmed_mean'
-            'beta': [0.05],  # trimmed means parameters
+            'update_method': ['trimmed_mean'], #gradient update methods for server, 'mean', 'median','trimmed_mean'
+            'beta': [0.1],  # 0.05 trimmed means parameters
 
             "data_seed": [v for v in range(0, 100, 2)],  # different seeds for data
 

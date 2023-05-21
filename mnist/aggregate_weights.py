@@ -1,9 +1,11 @@
-
+import scipy
 import torch
 import numpy as np
 
 
 def trimmed_mean_weights(params, beta):
+    return scipy.stats.trim_mean(params, proportiontocut=beta, axis=0)
+
     # scores = np.asarray(scores)
     # grads = torch.stack(grads)
     # mask = (scores == 1)
@@ -30,22 +32,22 @@ def trimmed_mean_weights(params, beta):
     #             _tmp = torch.mean(torch.stack([vs[0][i] for vs in ts[m:-m]]), dim=0)
     #         tmp[i] = _tmp
 
-    # remove beta percent data and then compute the trimmed mean
-    d = params.shape[1] # dimensions
-    tmp = torch.zeros_like(params[0])
-    for i in range(d): # for each dimension
-        ts = sorted([(v, v[i]) for v in params], key=lambda vs: vs[1], reverse=False)
-        m = int(np.floor(len(ts) * beta))  # remove the m smallest and m biggest grads from ts
-        if 2 * m >= len(ts):
-            raise ValueError(f'beta({beta}) is too large!')
-        elif m == 0:
-            # print(i, d, grads[mask][:, i], flush=True)
-            _tmp = torch.mean(params[:, i], dim=0)
-        else:
-            _tmp = torch.mean(torch.stack([vs[0][i] for vs in ts[m:-m]]), dim=0)
-        tmp[i] = _tmp
-
-    return tmp
+    # # remove beta percent data and then compute the trimmed mean
+    # d = params.shape[1] # dimensions
+    # tmp = torch.zeros_like(params[0])
+    # for i in range(d): # for each dimension
+    #     ts = sorted([(v, v[i]) for v in params], key=lambda vs: vs[1], reverse=False)
+    #     m = int(np.floor(len(ts) * beta))  # remove the m smallest and m biggest grads from ts
+    #     if 2 * m >= len(ts):
+    #         raise ValueError(f'beta({beta}) is too large!')
+    #     elif m == 0:
+    #         # print(i, d, grads[mask][:, i], flush=True)
+    #         _tmp = torch.mean(params[:, i], dim=0)
+    #     else:
+    #         _tmp = torch.mean(torch.stack([vs[0][i] for vs in ts[m:-m]]), dim=0)
+    #     tmp[i] = _tmp
+    #
+    # return tmp
 
 
 

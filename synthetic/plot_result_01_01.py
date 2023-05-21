@@ -120,7 +120,8 @@ def extract_data_proposed(results, cfg2, plot_metric='min_dist'):
     del cfg2['data_seed']
     del cfg2['train_seed']
     del cfg2['lr']
-    del cfg2['alg_method']
+    # del cfg2['alg_method']
+    cfg2['alg_method'] = ['Proposed']
 
     cfgs2 = list(product_dict(**cfg2))
 
@@ -288,16 +289,17 @@ def main_line():
                                 alpha = [0.1], beta = [0.1])
                 else:
                     cfg2 = get_CFG(p=[p], m=[m], alg_method=['proposed'], update_method=['mean', 'median', 'trimmed_mean'])
-                # try:
-                #     prop_plot_data = extract_data(prop_results, cfg2, plot_metric)
-                # except Exception as e:
-                #     print(e)
-                #     prop_plot_data = extract_data_proposed(prop_results, cfg2, plot_metric)  # for old results
 
-                if prop_file.startswith('K=10_') or prop_file.startswith('K=15_'):
-                    prop_plot_data = extract_data_proposed(prop_results, cfg2, plot_metric)  # for old results
-                else:
-                    prop_plot_data = extract_data(prop_results, cfg2, plot_metric)
+                try:
+                    prop_plot_data = extract_data(prop_results, copy.deepcopy(cfg2), plot_metric)
+                except Exception as e:
+                    print(e)
+                    prop_plot_data = extract_data_proposed(prop_results, copy.deepcopy(cfg2), plot_metric)  # for old results
+
+                # if prop_file.startswith('K=10_') or prop_file.startswith('K=15_'):
+                #     prop_plot_data = extract_data_proposed(prop_results, cfg2, plot_metric)  # for old results
+                # else:
+                #     prop_plot_data = extract_data(prop_results, cfg2, plot_metric)
 
                 # 3. Combine two plot data and plot
                 plot_data = merge_two_dicts(prop_plot_data, bs_plot_data)
@@ -382,20 +384,21 @@ def main_bar():
     ## the data
 
     data = []
-    # out_dir = 'alpha_005-beta_005-20230515/paper_plots'
-    # # files = ['K=2_baseline.pkl_min_dist.pkl','K=5_baseline.pkl_min_dist.pkl','K=10_baseline.pkl_min_dist.pkl', 'K=15_baseline.pkl_min_dist.pkl']
-    # files = ['K=2_baseline.pkl_min_dist.pkl', 'K=5_baseline.pkl_min_dist.pkl',
-    #          'K=15_baseline.pkl_min_dist.pkl']
+    out_dir = 'alpha_005-beta_005-20230515/paper_plots'
+    # files = ['K=2_baseline.pkl_min_dist.pkl','K=5_baseline.pkl_min_dist.pkl','K=10_baseline.pkl_min_dist.pkl', 'K=15_baseline.pkl_min_dist.pkl']
+    files = ['K=2_baseline.pkl_min_dist.pkl', 'K=5_baseline.pkl_min_dist.pkl',
+             'K=10_baseline.pkl_min_dist.pkl',
+             'K=15_baseline.pkl_min_dist.pkl']
 
-    out_dir = 'alpha_01-beta_01-20230520/paper_plots'
-    files = ['K_2-baseline.pkl_min_dist.pkl', 'K_5-baseline.pkl_min_dist.pkl',
-             'K_10-baseline.pkl_min_dist.pkl','K_15-baseline.pkl_min_dist.pkl']
+    # out_dir = 'alpha_01-beta_01-20230520/paper_plots'
+    # files = ['K_2-baseline.pkl_min_dist.pkl', 'K_5-baseline.pkl_min_dist.pkl',
+    #          'K_10-baseline.pkl_min_dist.pkl','K_15-baseline.pkl_min_dist.pkl']
 
     ## necessary variables
     N = len(files)
     ind = np.arange(N)  # the x locations for the groups
-    # xTickMarks = ['K=2', 'K=5', 'K=10', 'K=15']
-    xTickMarks = ['K=2', 'K=5', 'K=15']
+    xTickMarks = ['K=2', 'K=5', 'K=10', 'K=15']
+    # xTickMarks = ['K=2', 'K=5', 'K=15']
     width = 0.18  # the width of the bars
 
     res = {}
@@ -458,5 +461,5 @@ def main_bar():
     plt.show()
 
 if __name__ == '__main__':
-    main_line()
+    # main_line()
     main_bar()

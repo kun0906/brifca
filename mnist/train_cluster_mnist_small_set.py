@@ -13,52 +13,62 @@ import torch.optim as optim
 import torchvision
 import torchvision.datasets as datasets
 from torch.utils.data import DataLoader, Dataset, TensorDataset
-
+from functools import partial
 import numpy as np
 
-# from mnist.aggregate_weights import trimmed_mean_weights
 import scipy
 from util import *
 
 # LR_DECAY = True
 LR_DECAY = False
-
+print = partial(print, flush=True)
+parser = argparse.ArgumentParser()
+parser.add_argument("--project-dir", type=str, default="small_set-alpha_01-beta_01")
+parser.add_argument("--dataset-dir", type=str, default="small_set-alpha_01-beta_01")
+parser.add_argument("--alg_method", type=str, default="proposed")
+parser.add_argument("--update_method", type=str, default="trimmed_mean")
+# parser.add_argument("--num-epochs",type=float,default=)
+parser.add_argument("--lr", type=float, default=0.1)
+parser.add_argument("--data-seed", type=int, default=0)
+parser.add_argument("--train-seed", type=int, default=0)
+parser.add_argument("--config-override", type=str, default="")
+args = parser.parse_args()
 
 def main():
+
     config = get_config()
     # the way how we compute the weights on the server
-    config['update_method'] = "median"
-    config['beta'] = 0.05
-
-    # reset m based
-    # compute number of normal and Byzantine machines
-    # 4 clusters, and each one has 60000 training images. Each client has 100 images.
-    # 100 * 2400/4 = 60000
-    config['m_n'] = 2400    # make sure that config['m_n'] % config['p] == 0
-    # int(np.round(config['m'] * (1 - config['alpha'])))  # compute number of normal machines
-    config['m'] = int(config['m_n']/(1 - config['alpha']))
-    m_b = config['m'] - config['m_n']  # compute number of Byzantine machines
-    config['m_b'] = (m_b)//config['p'] * config['p']     # make sure that config['m_b'] % config['p] == 0
-    config['m'] = config['m_n'] + config['m_b'] # update  config['m'] based on new m_n and m_b
+    config['alg_method'] = args.alg_method
+    config['update_method'] = args.update_method
     config['train_seed'] = config['data_seed']
+    config['project_dir'] = os.path.join(args.project_dir, config['alg_method'], config['update_method'], str(config['data_seed']))
+    config['beta'] = 0  # we will reset it in _setup_datset()
 
-    print("config:", config)
+    # # reset m based
+    # # compute number of normal and Byzantine machines
+    # # 4 clusters, and each one has 60000 training images. Each client has 100 images.
+    # # 100 * 2400/4 = 60000
+    # config['m_n'] = 2400    # make sure that config['m_n'] % config['p] == 0
+    # # int(np.round(config['m'] * (1 - config['alpha'])))  # compute number of normal machines
+    # config['m'] = int(config['m_n']/(1 - config['alpha']))
+    # m_b = config['m'] - config['m_n']  # compute number of Byzantine machines
+    # config['m_b'] = (m_b)//config['p'] * config['p']     # make sure that config['m_b'] % config['p] == 0
+    # config['m'] = config['m_n'] + config['m_b'] # update  config['m'] based on new m_n and m_b
+    config['m'] = config['m_n'] = config['m_b'] = 0  # we will reset these in _setup_datset()
+    print("initial config:", config)
 
-    exp = TrainMNISTCluster(config)
+    if  config['alg_method'] =='baseline':
+        raise NotImplementedError()
+    elif  config['alg_method'] =='proposed':
+        exp = TrainMNISTCluster(config)
+    else:
+        raise NotImplementedError()
+
     exp.setup()
     exp.run()
 
 
 def get_config():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--project-dir", type=str, default="output")
-    parser.add_argument("--dataset-dir", type=str, default="output")
-    # parser.add_argument("--num-epochs",type=float,default=)
-    parser.add_argument("--lr", type=float, default=0.1)
-    parser.add_argument("--data-seed", type=int, default=0)
-    parser.add_argument("--train-seed", type=int, default=0)
-    parser.add_argument("--config-override", type=str, default="")
-    args = parser.parse_args()
 
     # read config json and update the sysarg
     with open("config.json", "r") as read_file:
@@ -84,14 +94,18 @@ class TrainMNISTCluster(object):
         self.random_state = self.seed
         self.config = config
 
-        assert self.config['m_n'] % self.config['p'] == 0
+        # assert self.config['m_n'] % self.config['p'] == 0
 
     def setup(self):
 
         os.makedirs(self.config['project_dir'], exist_ok=True)
-        update_method = self.config['update_method']
-        self.result_fname = os.path.join(self.config['project_dir'], f'{update_method}-results.pickle')
-        self.checkpoint_fname = os.path.join(self.config['project_dir'], f'{update_method}-checkpoint.pt')
+        # alg_method = self.config['alg_method']
+        # update_method = self.config['update_method']
+        data_seed = self.config['data_seed']
+        self.result_fname = os.path.join(self.config['project_dir'],
+                                         f'results.pickle')
+        self.checkpoint_fname = os.path.join(self.config['project_dir'],
+                                             f'checkpoint.pt')
 
         self.setup_datasets()
         self.setup_models()
@@ -117,7 +131,8 @@ class TrainMNISTCluster(object):
 
         dataset = {}
         dataset['data_indices'], dataset['cluster_assign'] = \
-            self._setup_dataset(MNIST_TRAINSET_DATA_SIZE, cfg['p'], cfg['m_n'], cfg['m_b'], cfg['n'], random=True)
+            self._setup_dataset(MNIST_TRAINSET_DATA_SIZE, cfg['p'], cfg['m_n'], cfg['m_b'], cfg['n'], random=True,
+                                train=True)
         (X, y) = self._load_MNIST(train=True)
         dataset['X'] = X
         dataset['y'] = y
@@ -126,17 +141,18 @@ class TrainMNISTCluster(object):
         dataset = {}
         # no Byzantine machines in the test phrase
         dataset['data_indices'], dataset['cluster_assign'] = \
-            self._setup_dataset(MNIST_TESTSET_DATA_SIZE, cfg['p'], cfg['m_test'], 0, cfg['n'], random=True)
+            self._setup_dataset(MNIST_TESTSET_DATA_SIZE, cfg['p'], cfg['m_test'], 0, cfg['n'], random=True, train=False)
         (X, y) = self._load_MNIST(train=False)
         dataset['X'] = X
         dataset['y'] = y
         self.dataset['test'] = dataset
 
+        print(f'final config: {self.config}')
         # import ipdb; ipdb.set_trace()
 
-    def _setup_dataset(self, num_data, p, m_n, m_b, n, random=True):
+    def _setup_dataset(self, num_data, p, m_n, m_b, n, random=True, train=True):
 
-        assert (m_n // p) * n == num_data
+        # assert (m_n // p) * n == num_data
 
         dataset = {}
 
@@ -145,14 +161,20 @@ class TrainMNISTCluster(object):
         data_indices = []
         cluster_assign = []
 
-        m_per_cluster = m_n // p
+        # m_per_cluster = m_n // p
+        n = self.config['n'] = 100  # each machine has 20 images
+        if train:
+            m_per_cluster = 10*4  # each cluster has 10 machines, each machine has n images
+            m_n = self.config['m_n'] = m_per_cluster * p  # 40 normal machines
+        else:  # test
+            m_per_cluster = int(self.config['m'] * 0.2 / p)  # the number of machines in test set is 20%*m
+            m_n = self.config['m_test'] = m_per_cluster * p  # 40 normal machines
         for p_i in range(p):
-
             if random:
                 ll = list(np.random.permutation(num_data))
             else:
                 ll = list(range(num_data))
-
+            ll = ll[:m_per_cluster * n]  # each cluster has m_per_cluster * n images
             ll2 = chunkify(ll, m_per_cluster)  # splits ll into m lists with size n
             data_indices += ll2
 
@@ -164,9 +186,11 @@ class TrainMNISTCluster(object):
         assert data_indices.shape[0] == m_n
 
         # Only use only distribution to mimic the data generated by Byzantine machines:
-        if m_b > 0:
+        if train:
+            alpha=self.config['alpha'] = self.config['beta'] = 0.1
+            m_b = self.config['m_b'] = (int(m_n/(1-alpha)*alpha)//p) * p  # 4 machines/0.1, here alpha = 0.1.
             # p outlier clusters, where each one has m_b//p Byzantine machines, and each machine has n outlier images.
-            m_per_b_cluster = m_b//p
+            m_per_b_cluster = m_b // p
             b_data_indices = []
             b_cluster_assign = []
 
@@ -175,7 +199,7 @@ class TrainMNISTCluster(object):
                     ll = list(np.random.permutation(num_data))
                 else:
                     ll = list(range(num_data))
-                ll = ll[:m_per_b_cluster*n] # only have m_b*n outlier images
+                ll = ll[:m_per_b_cluster * n]  # only have m_b*n outlier images
                 ll2 = chunkify(ll, m_per_b_cluster)  # splits ll into m lists with size n
                 b_data_indices += ll2
 
@@ -185,7 +209,11 @@ class TrainMNISTCluster(object):
             cluster_assign = np.concatenate([cluster_assign, np.array(b_cluster_assign)], axis=0)
             assert data_indices.shape[0] == cluster_assign.shape[0]
             assert data_indices.shape[0] == m_b + m_n
-
+            self.config['m'] = m_b + m_n
+        else:
+            # test set has no outlier images
+            assert m_b == 0
+            self.config['m_test'] = m_n
         return data_indices, cluster_assign
 
     def _load_MNIST(self, train=True):
@@ -296,8 +324,8 @@ class TrainMNISTCluster(object):
                 with open(self.result_fname, 'wb') as outfile:
                     pickle.dump(results, outfile)
                     print(f'result written at {self.result_fname}')
-                self.save_checkpoint()
-                print(f'checkpoint written at {self.checkpoint_fname}')
+                # self.save_checkpoint() # too slow?
+                # print(f'checkpoint written at {self.checkpoint_fname}')
 
         # import ipdb; ipdb.set_trace()
 
@@ -354,12 +382,12 @@ class TrainMNISTCluster(object):
                 plt.tight_layout()
 
                 # f = f"{out_dir}/n_{ns[0]}-{x_label}_{plot_metric}"
-                f = f'{results_fname}-{plot_metric}.png'
+                f = f'{results_fname}-{plot_metric}'
                 plt.savefig(f"{f}.png", dpi=100)
                 # plt.savefig(f"{f}.eps", format="eps", dpi=100)
                 # plt.savefig(f"{f}.svg", format="svg", transparent=True)
                 print(f)
-                plt.show()
+                # plt.show()
                 plt.clf()
                 plt.close()
 
@@ -395,7 +423,7 @@ class TrainMNISTCluster(object):
         print(str0)
 
     def train(self, cluster_assign, lr):
-        VERBOSE = 0
+        VERBOSE = 1
 
         cfg = self.config
         m = self.config['m']  # number of total machines
