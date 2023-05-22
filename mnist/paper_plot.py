@@ -3,6 +3,9 @@ import pickle
 import shutil
 import subprocess
 import numpy as np
+from functools import partial
+
+print = partial(print, flush=True)
 
 def main():
 
@@ -12,6 +15,10 @@ def main():
     data_seeds = range(0, 100, 20)
     in_dir = 'alpha_01-beta_01' # 'small_set-alpha_01-beta_01'
     results_file = f'{in_dir}/results.pickle'
+
+    if os.path.exists(results_file):
+        os.remove(results_file)
+
     n_epochs = 100
     if not os.path.exists(results_file):
         results = {}
@@ -61,6 +68,7 @@ def main():
                         for j, data_seed in enumerate(data_seeds):
                             # if i == 0: continue
                             vs = results[alg_method][update_method][j][i]
+                            # print(train_method, plot_metric, alg_method, update_method, j, i)
                             _ys.append(vs[train_method][plot_metric])
                         ys.append(np.mean(_ys))
                         ys_errs.append(1.96*np.std(_ys)/np.sqrt(len(data_seeds)))
@@ -103,7 +111,7 @@ def main():
             plt.close()
 
     out_file = f'{out_dir}/results.txt'
-    with open(out_file, 'wb') as f:
+    with open(out_file, 'w') as f:
         pickle.dump(txt_results, f)
 
     print(out_file)

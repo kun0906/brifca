@@ -23,7 +23,7 @@ LR_DECAY = False
 if torch.cuda.is_available():
     DEVICE = torch.device("cuda")  # Use the first available GPU
     print("n_GPUs:", torch.cuda.device_count())
-    print("GPU: ", torch.cuda.get_device_name(DEVICE))
+    print("GPU name: ", torch.cuda.get_device_name(DEVICE))
 else:
     DEVICE = torch.device("cpu")  # Use CPU if GPU is not available
 print(f'CUDA is available: {DEVICE}')
@@ -32,10 +32,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--project_dir", type=str, default="alpha_01-beta_01")
 parser.add_argument("--dataset_dir", type=str, default="alpha_01-beta_01")
 parser.add_argument("--alg_method", type=str, default="proposed")
-parser.add_argument("--update_method", type=str, default="mean")
+parser.add_argument("--update_method", type=str, default="trimmed_mean")
 parser.add_argument("--n_epochs", type=int, default=100)
 parser.add_argument("--lr", type=float, default=0.1)
-parser.add_argument("--data_seed", type=int, default=0)
+parser.add_argument("--data_seed", type=int, default=40)
 parser.add_argument("--train_seed", type=int, default=0)
 parser.add_argument("--config_override", type=str, default="")
 args = parser.parse_args()
@@ -445,11 +445,10 @@ class TrainMNISTCluster(object):
                 loss = self.criterion(y_logit, y).to(DEVICE)
 
                 model.zero_grad()
-                loss.backward()
-                self.local_param_update(model, lr)
+                loss.backward()     # compute the gradients
+                # self.local_param_update(model, lr)
 
-            model.zero_grad()
-
+            # model.zero_grad() # we still need grads for the global update
             updated_models.append(model)
 
         t02 = time.time()
@@ -472,7 +471,7 @@ class TrainMNISTCluster(object):
 
         for p_i, models in enumerate(local_models):
             if len(models) > 0:
-                self.global_param_update(models, self.models[p_i])
+                self.global_param_update(models, self.models[p_i], lr=lr)
         t1 = time.time()
 
         if VERBOSE: print(f'global update {t1 - t0:.3f}sec')
@@ -508,14 +507,21 @@ class TrainMNISTCluster(object):
         corrects = {}
         for m_i in range(m):
             (X, y) = self.load_data(m_i, train=train)  # load batch data rotated
+            # import matplotlib.pyplot as plt
+            # # plt.imshow(X_batch2[0])
+            # # plt.show()
+            # # import ipdb; ipdb.set_trace()
             for p_i in range(p):
-                y_logit = self.models[p_i](X.to(DEVICE)).to(DEVICE)
+                y_logit = self.models[p_i](X).to(DEVICE)
                 loss = self.criterion(y_logit, y).to(DEVICE)  # loss of
                 n_correct = self.n_correct(y_logit, y)
 
                 losses[(m_i, p_i)] = loss.item()
                 corrects[(m_i, p_i)] = n_correct
-
+                # if m_i < cfg['m_n'] and m_i % 500==0:
+                #     print('normal:', m_i, cfg['m_n'], p_i, loss)
+                # if m_i >= cfg['m_n'] and m_i%100==0:
+                #     print('Byzantine:', m_i, cfg['m_n'], p_i, loss)
             num_data += X.shape[0]
 
         # calculate loss and cluster the machines
@@ -607,6 +613,7 @@ class TrainMNISTCluster(object):
                 X_batch2[_indices,:] = torchvision.transforms.functional.rotate(X_batch[_indices,:], (i * 90) + 45).to(DEVICE)
 
             X_batch3 = X_batch2.reshape(-1, 28 * 28).to(DEVICE)
+            X_batch3 = X_batch3 + torch.FloatTensor(X_batch3.shape).uniform_(0, 10).to(DEVICE)  # add [0, 1] values
             return X_batch3.to(DEVICE), y_batch3.to(DEVICE)
 
         else:  # for normal machine
@@ -638,41 +645,76 @@ class TrainMNISTCluster(object):
             if param.requires_grad:
                 param.data -= lr * param.grad
 
-        model.zero_grad()
+        # model.zero_grad()
 
         # import ipdb; ipdb.set_trace() # we need to check the output of name, check if duplicate exists
+    #
+    # def global_param_update_old_one(self, local_models, global_model):
+    #
+    #     update_method = self.config['update_method']
+    #     print('global_param_update: ', update_method)
+    #     weights = {}
+    #
+    #     for m_i, local_model in enumerate(local_models):
+    #         for name, param in local_model.named_parameters():
+    #             if name not in weights:
+    #                 weights[name] = [torch.zeros_like(param.data)]
+    #             # weights[name] += param.data
+    #             weights[name].append(param.data)
+    #
+    #     for name, param in global_model.named_parameters():
+    #         ws = torch.stack(weights[name], dim=0)
+    #         if update_method == 'mean':  # coordinate_wise_mean
+    #             # average the grads
+    #             # weights[name] /= len(local_models)
+    #             ws = torch.mean(ws, dim=0)
+    #         elif update_method == 'median':  # coordinate_wise_median
+    #             ws, idx = torch.median(ws, dim=0)
+    #         elif update_method == 'trimmed_mean':  # trimmed_mean
+    #             beta = self.config['beta']  # parameter for trimmed mean
+    #             # ws = trimmed_mean_weights(ws, beta)
+    #             arr = scipy.stats.trim_mean(torch.Tensor.cpu(ws).numpy(), proportiontocut=beta, axis=0)
+    #             ws = torch.from_numpy(arr).to(DEVICE)
+    #         else:
+    #             raise NotImplementedError(f'{update_method}')
+    #
+    #         # param.data = weights[name]
+    #         param.data = ws.to(DEVICE)
+    #     # # import ipdb; ipdb.set_trace()
 
-    def global_param_update(self, local_models, global_model):
+
+    def global_param_update(self, local_models, global_model, lr=None):
 
         update_method = self.config['update_method']
         print('global_param_update: ', update_method)
-        weights = {}
+        grads = {}
 
         for m_i, local_model in enumerate(local_models):
             for name, param in local_model.named_parameters():
-                if name not in weights:
-                    weights[name] = [torch.zeros_like(param.data)]
+                if name not in grads:
+                    grads[name] = [torch.zeros_like(param.grad.data)]
                 # weights[name] += param.data
-                weights[name].append(param.data)
+                grads[name].append(param.grad.data)
 
         for name, param in global_model.named_parameters():
-            ws = torch.stack(weights[name], dim=0)
+            _name_grads = torch.stack(grads[name], dim=0)
             if update_method == 'mean':  # coordinate_wise_mean
                 # average the grads
                 # weights[name] /= len(local_models)
-                ws = torch.mean(ws, dim=0)
+                grad = torch.mean(_name_grads, dim=0)
             elif update_method == 'median':  # coordinate_wise_median
-                ws, idx = torch.median(ws, dim=0)
+                grad, idx = torch.median(_name_grads, dim=0)
             elif update_method == 'trimmed_mean':  # trimmed_mean
                 beta = self.config['beta']  # parameter for trimmed mean
                 # ws = trimmed_mean_weights(ws, beta)
-                arr = scipy.stats.trim_mean(torch.Tensor.cpu(ws).numpy(), proportiontocut=beta, axis=0)
-                ws = torch.from_numpy(arr).to(DEVICE)
+                arr = scipy.stats.trim_mean(torch.Tensor.cpu(_name_grads).numpy(), proportiontocut=beta, axis=0)
+                grad = torch.from_numpy(arr).to(DEVICE)
             else:
                 raise NotImplementedError(f'{update_method}')
 
             # param.data = weights[name]
-            param.data = ws.to(DEVICE)
+            # param.data = ws.to(DEVICE)
+            param.data -= lr * grad
         # # import ipdb; ipdb.set_trace()
 
     def test(self, train=False):

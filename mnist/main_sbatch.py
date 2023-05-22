@@ -8,8 +8,7 @@ def generate_sh():
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
 
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    os.makedirs(out_dir, exist_ok=True)
 
     cnt = 0
     alg_methods = ['proposed']      # 'baseline'
@@ -25,7 +24,8 @@ def generate_sh():
 
 #SBATCH --job-name={name}         # create a short name for your job
 #SBATCH --time=2:{mm}:00          # total run time limit (HH:MM:SS)\
-#SBATCH --gres=gpu:1             # number of gpus per node
+#SBATCH --gres=gpu:1             # number of gpus per node\
+#SBATCH --mem=128G               #128GB
 #SBATCH --output={out_dir}/out_{name}.txt
 #SBATCH --error={out_dir}/err_{name}.txt
 

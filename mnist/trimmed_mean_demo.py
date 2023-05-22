@@ -13,3 +13,9 @@ params = params.reshape((5, 3, 4))
 print(params, params.shape)
 res = scipy.stats.trim_mean(params, proportiontocut=beta, axis=0)
 print(res, res.shape)
+
+import pickle
+in_file = 'results.pickle'
+with open(in_file, 'rb') as f:
+    data = pickle.load(f)
+print()

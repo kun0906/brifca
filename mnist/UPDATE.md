@@ -1,3 +1,7 @@
+V0.1.3: Update gradient computing for server update 
+1. Update gradient computing for server update 
+2. Chang outliers
+
 V0.1.2: Add GPU
 1. Add CPU
 2. Chang outliers 
