@@ -1,48 +1,75 @@
+from functools import partial
+
+print = partial(print, flush=True)
+
 import argparse
 import json
 import os
-import time
-import itertools
 import pickle
 import copy
 
-import torch
-import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
 import torchvision
 import torchvision.datasets as datasets
-from torch.utils.data import DataLoader, Dataset, TensorDataset
+from torch.utils.data import DataLoader
 
-import numpy as np
-
-# from mnist.aggregate_weights import trimmed_mean_weights
 import scipy
 from util import *
 
 # LR_DECAY = True
 LR_DECAY = False
 
+# Check if GPU is available
+if torch.cuda.is_available():
+    DEVICE = torch.device("cuda")  # Use the first available GPU
+    print("n_GPUs:", torch.cuda.device_count())
+    print("GPU: ", torch.cuda.get_device_name(DEVICE))
+else:
+    DEVICE = torch.device("cpu")  # Use CPU if GPU is not available
+print(f'CUDA is available: {DEVICE}')
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--project_dir", type=str, default="alpha_01-beta_01")
+parser.add_argument("--dataset_dir", type=str, default="alpha_01-beta_01")
+parser.add_argument("--alg_method", type=str, default="proposed")
+parser.add_argument("--update_method", type=str, default="mean")
+parser.add_argument("--n_epochs", type=int, default=100)
+parser.add_argument("--lr", type=float, default=0.1)
+parser.add_argument("--data_seed", type=int, default=0)
+parser.add_argument("--train_seed", type=int, default=0)
+parser.add_argument("--config_override", type=str, default="")
+args = parser.parse_args()
+
+seed = args.data_seed
+np.random.seed(seed)
+torch.manual_seed(seed)
+torch.random.manual_seed(seed)
+torch.cuda.manual_seed(seed)
+
 
 def main():
     config = get_config()
-    # the way how we compute the weights on the server
-    config['update_method'] = "median"
-    config['beta'] = 0.05
 
+    # the way how we compute the weights on the server
+    config['alg_method'] = args.alg_method
+    config['update_method'] = args.update_method
+    config['train_seed'] = config['data_seed'] = args.data_seed
+    config['n_epochs'] = args.n_epochs
+    config['project_dir'] = os.path.join(args.project_dir, config['alg_method'], config['update_method'],
+                                         str(config['n_epochs']), str(config['data_seed']))
+    config['beta'] = config['alpha']
     # reset m based
     # compute number of normal and Byzantine machines
     # 4 clusters, and each one has 60000 training images. Each client has 100 images.
     # 100 * 2400/4 = 60000
-    config['m_n'] = 2400    # make sure that config['m_n'] % config['p] == 0
+    config['m_n'] = 2400  # make sure that config['m_n'] % config['p] == 0
     # int(np.round(config['m'] * (1 - config['alpha'])))  # compute number of normal machines
-    config['m'] = int(config['m_n']/(1 - config['alpha']))
+    config['m'] = int(config['m_n'] / (1 - config['alpha']))
     m_b = config['m'] - config['m_n']  # compute number of Byzantine machines
-    config['m_b'] = (m_b)//config['p'] * config['p']     # make sure that config['m_b'] % config['p] == 0
-    config['m'] = config['m_n'] + config['m_b'] # update  config['m'] based on new m_n and m_b
-    config['train_seed'] = config['data_seed']
+    config['m_b'] = (m_b) // config['p'] * config['p']  # make sure that config['m_b'] % config['p] == 0
+    config['m'] = config['m_n'] + config['m_b']  # update  config['m'] based on new m_n and m_b
 
-    print("config:", config)
+    print("final config:", config)
 
     exp = TrainMNISTCluster(config)
     exp.setup()
@@ -50,16 +77,6 @@ def main():
 
 
 def get_config():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--project-dir", type=str, default="output")
-    parser.add_argument("--dataset-dir", type=str, default="output")
-    # parser.add_argument("--num-epochs",type=float,default=)
-    parser.add_argument("--lr", type=float, default=0.1)
-    parser.add_argument("--data-seed", type=int, default=0)
-    parser.add_argument("--train-seed", type=int, default=0)
-    parser.add_argument("--config-override", type=str, default="")
-    args = parser.parse_args()
-
     # read config json and update the sysarg
     with open("config.json", "r") as read_file:
         config = json.load(read_file)
@@ -89,9 +106,9 @@ class TrainMNISTCluster(object):
     def setup(self):
 
         os.makedirs(self.config['project_dir'], exist_ok=True)
-        update_method = self.config['update_method']
-        self.result_fname = os.path.join(self.config['project_dir'], f'{update_method}-results.pickle')
-        self.checkpoint_fname = os.path.join(self.config['project_dir'], f'{update_method}-checkpoint.pt')
+        # update_method = self.config['update_method']
+        self.result_fname = os.path.join(self.config['project_dir'], f'results.pickle')
+        self.checkpoint_fname = os.path.join(self.config['project_dir'], f'checkpoint.pt')
 
         self.setup_datasets()
         self.setup_models()
@@ -166,7 +183,7 @@ class TrainMNISTCluster(object):
         # Only use only distribution to mimic the data generated by Byzantine machines:
         if m_b > 0:
             # p outlier clusters, where each one has m_b//p Byzantine machines, and each machine has n outlier images.
-            m_per_b_cluster = m_b//p
+            m_per_b_cluster = m_b // p
             b_data_indices = []
             b_cluster_assign = []
 
@@ -175,7 +192,7 @@ class TrainMNISTCluster(object):
                     ll = list(np.random.permutation(num_data))
                 else:
                     ll = list(range(num_data))
-                ll = ll[:m_per_b_cluster*n] # only have m_b*n outlier images
+                ll = ll[:m_per_b_cluster * n]  # only have m_b*n outlier images
                 ll2 = chunkify(ll, m_per_b_cluster)  # splits ll into m lists with size n
                 b_data_indices += ll2
 
@@ -208,7 +225,7 @@ class TrainMNISTCluster(object):
 
         X = X / 255.0
 
-        return X, y
+        return X.to(DEVICE), y.to(DEVICE)
 
     def setup_models(self):
         np.random.seed(self.config['train_seed'])
@@ -216,7 +233,7 @@ class TrainMNISTCluster(object):
 
         p = self.config['p']
 
-        self.models = [SimpleLinear(h1=self.config['h1']) for p_i in
+        self.models = [SimpleLinear(h1=self.config['h1']).to(DEVICE) for p_i in
                        range(p)]  # p models with p different params of dimension(1,d)
 
         self.criterion = torch.nn.CrossEntropyLoss()
@@ -224,7 +241,7 @@ class TrainMNISTCluster(object):
         # import ipdb; ipdb.set_trace()
 
     def run(self):
-        num_epochs = self.config['num_epochs']
+        n_epochs = self.config['n_epochs']
         lr = self.config['lr']
 
         results = []
@@ -255,7 +272,7 @@ class TrainMNISTCluster(object):
         # this will be used in next epoch
         cluster_assign = result['train']['cluster_assign']
 
-        for epoch in range(num_epochs):
+        for epoch in range(n_epochs):
 
             self.epoch = epoch
 
@@ -292,7 +309,7 @@ class TrainMNISTCluster(object):
             # this will be used in next epoch's gradient update
             cluster_assign = result['train']['cluster_assign']  # it will be changed in each epoch
 
-            if epoch % 10 == 0 or epoch == num_epochs - 1:
+            if epoch % 10 == 0 or epoch == n_epochs - 1:
                 with open(self.result_fname, 'wb') as outfile:
                     pickle.dump(results, outfile)
                     print(f'result written at {self.result_fname}')
@@ -327,7 +344,6 @@ class TrainMNISTCluster(object):
             # plot the results
             is_show = True
             if is_show:
-                import matplotlib;
                 # matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend; instead, writes files
                 from matplotlib import pyplot as plt
                 if plot_metric == 'loss':
@@ -425,8 +441,8 @@ class TrainMNISTCluster(object):
             #     pass
             for step_i in range(tau):  # train the model multiple times
 
-                y_logit = model(X)
-                loss = self.criterion(y_logit, y)
+                y_logit = model(X).to(DEVICE)
+                loss = self.criterion(y_logit, y).to(DEVICE)
 
                 model.zero_grad()
                 loss.backward()
@@ -468,8 +484,8 @@ class TrainMNISTCluster(object):
         losses = []
         for m_i in range(m):
             (X, y) = self.load_data(m_i)
-            y_logit = local_models[m_i](X)
-            loss = self.criterion(y_logit, y)
+            y_logit = local_models[m_i](X).to(DEVICE)
+            loss = self.criterion(y_logit, y).to(DEVICE)
 
             losses.append(loss.item())
 
@@ -493,8 +509,8 @@ class TrainMNISTCluster(object):
         for m_i in range(m):
             (X, y) = self.load_data(m_i, train=train)  # load batch data rotated
             for p_i in range(p):
-                y_logit = self.models[p_i](X)
-                loss = self.criterion(y_logit, y)  # loss of
+                y_logit = self.models[p_i](X.to(DEVICE)).to(DEVICE)
+                loss = self.criterion(y_logit, y).to(DEVICE)  # loss of
                 n_correct = self.n_correct(y_logit, y)
 
                 losses[(m_i, p_i)] = loss.item()
@@ -561,11 +577,37 @@ class TrainMNISTCluster(object):
 
         X_batch = dataset['X'][indices]
         y_batch = dataset['y'][indices]
-        if p_i >= cfg['p']:  # for Byzantine machines
+        if p_i >= cfg['p']:  # for Byzantine machines:change here? 1) 0, 90, 180, 270. 2) 45, 135, 225, 315.
             # switch the label
             switch_labels = {9: 0, 8: 1, 7: 2, 6: 3, 5: 4, 4: 5, 3: 6, 2: 7, 1: 8, 0: 9}
-            torch.tensor([switch_labels[v] for v in y_batch.numpy()]).float()
-            return X_batch, y_batch
+            y_batch3 = torch.tensor([switch_labels[v] for v in torch.Tensor.cpu(y_batch).numpy()]).long()
+
+            if cfg['p'] == 4:
+                k = int(p_i)-cfg['p']
+            # elif cfg['p'] == 2:
+            #     k = (p_i % 2) * 2
+            # elif cfg['p'] == 1:
+            #     k = 0
+            else:
+                raise NotImplementedError("only p=1,2,4 supported")
+
+            # X_batch2 = torchvision.transforms.functional.rotate(X_batch, (k*90)+45).to(DEVICE)
+            # # X_batch2 = torch.rot90(X_batch, k=int(k), dims=(1, 2)).to(DEVICE)
+            # X_batch3 = X_batch2.reshape(-1, 28 * 28).to(DEVICE)
+            # # X_batch3 = 5 + X_batch3  # reverse the noise
+            # # X_batch3 = X_batch3 + torch.FloatTensor(X_batch3.shape).uniform_(0, 1).to(DEVICE) # add [0, 1] values
+            # # import matplotlib.pyplot as plt
+            # # plt.imshow(X_batch2[0])
+            # # plt.show()
+            # # import ipdb; ipdb.set_trace()
+            n_images = X_batch.shape[0]//cfg['p']
+            X_batch2 = X_batch.clone().detach()
+            for i in range(cfg['p']):
+                _indices=range(i*n_images, (i+1)*n_images, 1)
+                X_batch2[_indices,:] = torchvision.transforms.functional.rotate(X_batch[_indices,:], (i * 90) + 45).to(DEVICE)
+
+            X_batch3 = X_batch2.reshape(-1, 28 * 28).to(DEVICE)
+            return X_batch3.to(DEVICE), y_batch3.to(DEVICE)
 
         else:  # for normal machine
 
@@ -581,8 +623,8 @@ class TrainMNISTCluster(object):
             else:
                 raise NotImplementedError("only p=1,2,4 supported")
 
-            X_batch2 = torch.rot90(X_batch, k=int(k), dims=(1, 2))
-            X_batch3 = X_batch2.reshape(-1, 28 * 28)  # why do we need this?
+            X_batch2 = torch.rot90(X_batch, k=int(k), dims=(1, 2)).to(DEVICE)
+            X_batch3 = X_batch2.reshape(-1, 28 * 28).to(DEVICE)  #
 
             # import ipdb; ipdb.set_trace()
 
@@ -603,6 +645,7 @@ class TrainMNISTCluster(object):
     def global_param_update(self, local_models, global_model):
 
         update_method = self.config['update_method']
+        print('global_param_update: ', update_method)
         weights = {}
 
         for m_i, local_model in enumerate(local_models):
@@ -623,13 +666,13 @@ class TrainMNISTCluster(object):
             elif update_method == 'trimmed_mean':  # trimmed_mean
                 beta = self.config['beta']  # parameter for trimmed mean
                 # ws = trimmed_mean_weights(ws, beta)
-                arr = scipy.stats.trim_mean(ws.numpy(), proportiontocut=beta, axis=0)
-                ws = torch.from_numpy(arr)
+                arr = scipy.stats.trim_mean(torch.Tensor.cpu(ws).numpy(), proportiontocut=beta, axis=0)
+                ws = torch.from_numpy(arr).to(DEVICE)
             else:
                 raise NotImplementedError(f'{update_method}')
 
             # param.data = weights[name]
-            param.data = ws
+            param.data = ws.to(DEVICE)
         # # import ipdb; ipdb.set_trace()
 
     def test(self, train=False):

@@ -1,3 +1,8 @@
+V0.1.2: Add GPU
+1. Add CPU
+2. Chang outliers 
+3. 
+
 
 V0.1.1: Add small_set_mnist 
 1. Sample a subset of MNIST

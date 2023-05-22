@@ -1,3 +1,8 @@
+# import pydevd_pycharm
+# # ping nobel.princeton.edu to get ip address
+# pydevd_pycharm.settrace('nobel.princeton.edu', port=34567, stdoutToServer=True, stderrToServer=True)
+
+
 import numpy as np
 
 import scipy

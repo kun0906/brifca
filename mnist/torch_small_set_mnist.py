@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
     alg_methods = ['proposed', 'baseline']
     update_methods = ["mean", "median", "trimmed_mean"]
-    data_seeds = range(0, 100, 2)
+    data_seeds = range(0, 100, 50)
     for alg_method in alg_methods:
         for update_method in update_methods:
             for data_seed in data_seeds:

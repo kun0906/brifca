@@ -19,7 +19,7 @@ hostname -s
 date
 start=0
 end=99
-step=2
+step=50
 data_seeds=($(seq $start $step $end))
 echo "${data_seeds[@]}"
 alg_methods=('proposed' 'baseline')
@@ -27,7 +27,7 @@ update_methods=("mean" "median" "trimmed_mean")
 for alg_method in "${alg_methods[@]}"; do
   for update_method in "${update_methods[@]}"; do
     for data_seed in "${data_seeds[@]}"; do
-      cmd="python3 -u train_cluster_mnist_small_set.py --data-seed ${data_seed} --update_method ${update_method} --alg_method ${alg_method}"
+      cmd="python3 -u train_cluster_mnist_small_set.py --data_seed ${data_seed} --update_method ${update_method} --alg_method ${alg_method}"
       echo "$cmd"
       _out_dir="${out_dir}/${alg_method}/${update_method}/${data_seed}"
       if [ ! -d "$_out_dir" ]; then

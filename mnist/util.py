@@ -1,9 +1,25 @@
 import torch
 import numpy as np
-
+import time
+from datetime import datetime
 
 def test():
     pass
+
+
+def timer(func):
+	# This function shows the execution time of
+	# the function object passed
+	def wrap_func(*args, **kwargs):
+		t1 = time.time()
+		print(f'- {func.__name__}() starts at {datetime.now()}')
+		result = func(*args, **kwargs)
+		t2 = time.time()
+		print(f'+ {func.__name__}() ends at {datetime.now()}')
+		print(f'** Function {func.__name__!r} executed in {(t2 - t1):.4f}s')
+		return result
+
+	return wrap_func
 
 
 def dict_string(my_dict):

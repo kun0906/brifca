@@ -1,3 +1,8 @@
+from functools import partial
+print = partial(print, flush=True)
+
+import time
+st = time.time()
 import argparse
 import json
 import os
@@ -5,6 +10,10 @@ import time
 import itertools
 import pickle
 import copy
+import numpy as np
+import scipy
+ed = time.time()
+print(f'load library: {ed-st} seconds')
 
 import torch
 import torch.nn as nn
@@ -13,26 +22,39 @@ import torch.optim as optim
 import torchvision
 import torchvision.datasets as datasets
 from torch.utils.data import DataLoader, Dataset, TensorDataset
-from functools import partial
-import numpy as np
-
-import scipy
 from util import *
+ed = time.time()
+print(f'load torch: {ed-st} seconds')
+
+# Check if GPU is available
+if torch.cuda.is_available():
+    DEVICE = torch.device("cuda")  # Use the first available GPU
+else:
+    DEVICE = torch.device("cpu")   # Use CPU if GPU is not available
+print(f'CUDA is available: {DEVICE}')
 
 # LR_DECAY = True
 LR_DECAY = False
-print = partial(print, flush=True)
+
+
 parser = argparse.ArgumentParser()
-parser.add_argument("--project-dir", type=str, default="small_set-alpha_01-beta_01")
-parser.add_argument("--dataset-dir", type=str, default="small_set-alpha_01-beta_01")
+parser.add_argument("--project_dir", type=str, default="small_set-alpha_01-beta_01")
+parser.add_argument("--dataset_dir", type=str, default="small_set-alpha_01-beta_01")
 parser.add_argument("--alg_method", type=str, default="proposed")
 parser.add_argument("--update_method", type=str, default="trimmed_mean")
-# parser.add_argument("--num-epochs",type=float,default=)
+parser.add_argument("--n_epochs",type=int,default=2)
 parser.add_argument("--lr", type=float, default=0.1)
-parser.add_argument("--data-seed", type=int, default=0)
-parser.add_argument("--train-seed", type=int, default=0)
-parser.add_argument("--config-override", type=str, default="")
+parser.add_argument("--data_seed", type=int, default=0)
+parser.add_argument("--train_seed", type=int, default=0)
+parser.add_argument("--config_override", type=str, default="")
 args = parser.parse_args()
+
+
+seed = args.data_seed
+np.random.seed(seed)
+torch.manual_seed(seed)
+torch.random.manual_seed(seed)
+torch.cuda.manual_seed(seed)
 
 def main():
 
@@ -40,8 +62,10 @@ def main():
     # the way how we compute the weights on the server
     config['alg_method'] = args.alg_method
     config['update_method'] = args.update_method
-    config['train_seed'] = config['data_seed']
-    config['project_dir'] = os.path.join(args.project_dir, config['alg_method'], config['update_method'], str(config['data_seed']))
+    config['train_seed'] = config['data_seed'] = args.data_seed
+    config['n_epochs'] = args.n_epochs
+    config['project_dir'] = os.path.join(args.project_dir, config['alg_method'], config['update_method'],
+                                         str(config['n_epochs']), str(config['data_seed']))
     config['beta'] = 0  # we will reset it in _setup_datset()
 
     # # reset m based
@@ -57,9 +81,9 @@ def main():
     config['m'] = config['m_n'] = config['m_b'] = 0  # we will reset these in _setup_datset()
     print("initial config:", config)
 
-    if  config['alg_method'] =='baseline':
+    if config['alg_method'] =='baseline':
         raise NotImplementedError()
-    elif  config['alg_method'] =='proposed':
+    elif config['alg_method'] =='proposed':
         exp = TrainMNISTCluster(config)
     else:
         raise NotImplementedError()
@@ -96,6 +120,7 @@ class TrainMNISTCluster(object):
 
         # assert self.config['m_n'] % self.config['p'] == 0
 
+    @timer
     def setup(self):
 
         os.makedirs(self.config['project_dir'], exist_ok=True)
@@ -113,6 +138,7 @@ class TrainMNISTCluster(object):
         self.epoch = None
         self.lr = None
 
+    @timer
     def setup_datasets(self):
 
         np.random.seed(self.config['data_seed'])
@@ -229,8 +255,8 @@ class TrainMNISTCluster(object):
 
         dl = DataLoader(mnist_dataset)
 
-        X = dl.dataset.data  # (60000,28, 28)
-        y = dl.dataset.targets  # (60000)
+        X = dl.dataset.data.to(DEVICE)  # (60000,28, 28)
+        y = dl.dataset.targets.to(DEVICE)  # (60000)
 
         # normalize to have 0 ~ 1 range in each pixel
 
@@ -244,15 +270,16 @@ class TrainMNISTCluster(object):
 
         p = self.config['p']
 
-        self.models = [SimpleLinear(h1=self.config['h1']) for p_i in
+        self.models = [SimpleLinear(h1=self.config['h1']).to(DEVICE) for p_i in
                        range(p)]  # p models with p different params of dimension(1,d)
 
         self.criterion = torch.nn.CrossEntropyLoss()
 
         # import ipdb; ipdb.set_trace()
 
+    @timer
     def run(self):
-        num_epochs = self.config['num_epochs']
+        n_epochs = self.config['n_epochs']
         lr = self.config['lr']
 
         results = []
@@ -283,7 +310,7 @@ class TrainMNISTCluster(object):
         # this will be used in next epoch
         cluster_assign = result['train']['cluster_assign']
 
-        for epoch in range(num_epochs):
+        for epoch in range(n_epochs):
 
             self.epoch = epoch
 
@@ -320,7 +347,7 @@ class TrainMNISTCluster(object):
             # this will be used in next epoch's gradient update
             cluster_assign = result['train']['cluster_assign']  # it will be changed in each epoch
 
-            if epoch % 10 == 0 or epoch == num_epochs - 1:
+            if epoch % 10 == 0 or epoch == n_epochs - 1:
                 with open(self.result_fname, 'wb') as outfile:
                     pickle.dump(results, outfile)
                     print(f'result written at {self.result_fname}')
@@ -421,7 +448,7 @@ class TrainMNISTCluster(object):
         str0 = f"Epoch {self.epoch} {data_str}: loss {res['loss']:.3f} acc {res['acc']:.3f} clct{res['cl_ct']}{lr_str} {time_str}"
 
         print(str0)
-
+    @timer
     def train(self, cluster_assign, lr):
         VERBOSE = 1
 
@@ -439,22 +466,26 @@ class TrainMNISTCluster(object):
         #     [True if self.dataset['cluster_assign'][m_i] < p else False for m_i in range(m_n + m_b)])
 
         updated_models = []
-        for m_i in range(m_n + m_b):  # each machine assignment won't update.
-            if VERBOSE and m_i % 100 == 0: print(f'm {m_i}/{m} processing \r', end='')
+        for m_i in range(m_n + m_b):
+            st = time.time()
+            # if VERBOSE and m_i % 100 == 0: print(f'm {m_i}/{m} processing \r', end='')
 
             (X, y) = self.load_data(m_i)  # rotate images for normal machine and switch labels for Byzantine machine
 
             p_i = cluster_assign[m_i]
+
             # if p_i >= p: it won't happen, because we already assign each machine to each cluster
             model = copy.deepcopy(self.models[p_i])
+
+            # print(f'--train,m_i: {m_i}, {ed-st}seconds')
             # if flag_machines[m_i]: # normal machines
             #     pass
             # else:   # abnormal machines
             #     pass
             for step_i in range(tau):  # train the model multiple times
 
-                y_logit = model(X)
-                loss = self.criterion(y_logit, y)
+                y_logit = model(X).to(DEVICE)
+                loss = self.criterion(y_logit, y).to(DEVICE)
 
                 model.zero_grad()
                 loss.backward()
@@ -463,12 +494,13 @@ class TrainMNISTCluster(object):
             model.zero_grad()
 
             updated_models.append(model)
-
+            ed = time.time()
+            if VERBOSE and m_i % 100 == 0: print(f'm {m_i}/{m} processing (current m_i takes {ed-st} seconds) \r', end='')
         t02 = time.time()
         # print(f'running single ..took {t02-t01:.3f}sec')
 
         t1 = time.time()
-        if VERBOSE: print(f'local update {t1 - t0:.3f}sec')
+        if VERBOSE: print(f'local update {t1 - t0:.3f}sec for {m*tau} steps')
 
         # apply gradient update
         t0 = time.time()
@@ -503,6 +535,7 @@ class TrainMNISTCluster(object):
 
         return np.array(losses)
 
+    @timer
     def get_inference_stats(self, train=True):
         cfg = self.config
         if train:
@@ -521,8 +554,8 @@ class TrainMNISTCluster(object):
         for m_i in range(m):
             (X, y) = self.load_data(m_i, train=train)  # load batch data rotated
             for p_i in range(p):
-                y_logit = self.models[p_i](X)
-                loss = self.criterion(y_logit, y)  # loss of
+                y_logit = self.models[p_i](X).to(DEVICE)
+                loss = self.criterion(y_logit, y).to(DEVICE)  # loss of
                 n_correct = self.n_correct(y_logit, y)
 
                 losses[(m_i, p_i)] = loss.item()
@@ -574,7 +607,7 @@ class TrainMNISTCluster(object):
         correct = (predicted == y).sum().item()
 
         return correct
-
+    # @timer
     def load_data(self, m_i, train=True):
         # this part is very fast since its just rearranging models
         cfg = self.config
@@ -592,8 +625,8 @@ class TrainMNISTCluster(object):
         if p_i >= cfg['p']:  # for Byzantine machines
             # switch the label
             switch_labels = {9: 0, 8: 1, 7: 2, 6: 3, 5: 4, 4: 5, 3: 6, 2: 7, 1: 8, 0: 9}
-            torch.tensor([switch_labels[v] for v in y_batch.numpy()]).float()
-            return X_batch, y_batch
+            torch.tensor([switch_labels[v] for v in torch.Tensor.cpu(y_batch).numpy()]).float()
+            return X_batch.to(DEVICE), y_batch.to(DEVICE)
 
         else:  # for normal machine
 
@@ -609,8 +642,8 @@ class TrainMNISTCluster(object):
             else:
                 raise NotImplementedError("only p=1,2,4 supported")
 
-            X_batch2 = torch.rot90(X_batch, k=int(k), dims=(1, 2))
-            X_batch3 = X_batch2.reshape(-1, 28 * 28)  # why do we need this?
+            X_batch2 = torch.rot90(X_batch, k=int(k), dims=(1, 2)).to(DEVICE)
+            X_batch3 = X_batch2.reshape(-1, 28 * 28).to(DEVICE)  # why do we need this?
 
             # import ipdb; ipdb.set_trace()
 
@@ -627,7 +660,7 @@ class TrainMNISTCluster(object):
         model.zero_grad()
 
         # import ipdb; ipdb.set_trace() # we need to check the output of name, check if duplicate exists
-
+    # @timer
     def global_param_update(self, local_models, global_model):
 
         update_method = self.config['update_method']
@@ -651,13 +684,13 @@ class TrainMNISTCluster(object):
             elif update_method == 'trimmed_mean':  # trimmed_mean
                 beta = self.config['beta']  # parameter for trimmed mean
                 # ws = trimmed_mean_weights(ws, beta)
-                arr = scipy.stats.trim_mean(ws.numpy(), proportiontocut=beta, axis=0)
+                arr = scipy.stats.trim_mean(torch.Tensor.cpu(ws).numpy(), proportiontocut=beta, axis=0)
                 ws = torch.from_numpy(arr)
             else:
                 raise NotImplementedError(f'{update_method}')
 
             # param.data = weights[name]
-            param.data = ws
+            param.data = ws.to(DEVICE)
         # # import ipdb; ipdb.set_trace()
 
     def test(self, train=False):

@@ -2,11 +2,11 @@
     "m_test" : 400,
     "p" : 4,
     "n" : 100,
-    "alpha": 0.1,
+    "alpha": 0.0,
 
     "h1": 200,
 
-    "num_epochs": 100,
+    "n_epochs": 2,
 
     "batch_size":100,
     "tau":10,
