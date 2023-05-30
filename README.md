@@ -1,11 +1,8 @@
-# ifca
-Codebase for [An Efficient Framework for Clustered Federated Learning](https://arxiv.org/abs/2006.04088).
+# RIFCA
 
+RIFCA is a Python library adapted from [IFCA](https://arxiv.org/abs/2006.04088)
+ for robust federated learning. 
 
-# Requirements 
-* Python3==3.9.16 
-* torch==2.0.0
-* Numpy==1.24.2
-* scipy==1.10.1
-* scikit-learn==1.2.2
-* scikit-learn-extra==0.3.0
+# Note
+See each subfolder for more details on each case. 
+

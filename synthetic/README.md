@@ -1,15 +1,15 @@
-# IFCA - Synthetic
+# RIFCA
 
-Implementation of IFCA, synthetic experiments.
+RIFCA is a Python library adapted from [IFCA](https://arxiv.org/abs/2006.04088)
+ for robust federated learning. 
+
+This part is for synthetic experiments. 
 
 ## Requirements
-* Python3==3.9.16 
-* torch==2.0.0
-* Numpy==1.24.2
-* scipy==1.10.1
-* scikit-learn==1.2.2
-* scikit-learn-extra==0.3.0
-* matplotlib==3.7.1
+```bash 
+    Python 3.9.16
+    pip install -r requirements.txt 
+```
 
 ## Config.json
 ```json
@@ -21,6 +21,7 @@ Implementation of IFCA, synthetic experiments.
     "noise_scale": 0.001, # noise parameter (\sigma)  for synthetic data generation
     "num_epochs": 300,    # number of data pass
     "score":"set",        # scoring method ( only 'set' is used)
+    "update_method":"median", # update method used by the server
     "lr":0.1,             # learning rate
     "data_seed":0,        # random seed for generating data
     "train_seed":0        # random seed for weight initiailization and training
@@ -29,18 +30,27 @@ Implementation of IFCA, synthetic experiments.
 ## Running the experiments
 
 * To run the single instance of experiment (with data_seed=0 and train_seed=0):
-```
-bash run.sh
-```
-* To reproduce results in the paper:
 ```bash
-python run_all.py   # p=2, m vs n
-python run_p4_m_n.py   # p=4, m vs n
-python run_p2_r_noise.py   # p=2, r vs noise
-python run_p4_r_noise.py   # p=4, r vs noise
+python3 run_all.py
 ```
-Each script runs all possible combinations of experiments in cfg in main() ( by overwriting configuration data in config.json), and 4(=max_procs) processes of experiments are run concurrently. After all experiments are done, all result files are read and checks if the hyparameter combination had successful convergence.
 
-## Notes
-* It takes several days to run all the experiment. We recommend running this script in cluster with many CPU cores, with max_procs tuned to match the number of cores.
+[//]: # (* To reproduce results in the paper:)
 
+[//]: # (```bash)
+
+[//]: # (python run_all.py   # p=2, m vs n)
+
+[//]: # (python run_p4_m_n.py   # p=4, m vs n)
+
+[//]: # (python run_p2_r_noise.py   # p=2, r vs noise)
+
+[//]: # (python run_p4_r_noise.py   # p=4, r vs noise)
+
+[//]: # (```)
+[//]: # (Each script runs all possible combinations of experiments in cfg in main&#40;&#41; &#40; by overwriting configuration data in config.json&#41;, and 4&#40;=max_procs&#41; processes of experiments are run concurrently. After all experiments are done, all result files are read and checks if the hyparameter combination had successful convergence.)
+[//]: # ()
+[//]: # (## Notes)
+
+[//]: # (* It takes several days to run all the experiment. We recommend running this script in cluster with many CPU cores, with max_procs tuned to match the number of cores.)
+
+[//]: # ()

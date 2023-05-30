@@ -8,7 +8,7 @@
   https://www.tensorflow.org/install/source#linux
 
   https://researchcomputing.princeton.edu/support/knowledge-base/pytorch
-  $ ssh <YourNetID>@della-gpu.princeton.edu  # also adroit or stellar
+  $ ssh ky8517@della-gpu.princeton.edu
   $ module load anaconda3/2023.3
   $ CONDA_OVERRIDE_CUDA="11.2" conda create --name ifca_torch "pytorch==2.0*=cuda11*" torchvision -c conda-forge
   $ conda activate ifca_torch
