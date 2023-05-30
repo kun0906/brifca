@@ -1,0 +1,519 @@
+26ba0df HEAD@{2023-05-30 21:19:35 -0400}: rebase (finish): returning to refs/heads/main
+26ba0df HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.1.5: Update synthetic
+2ebed1b HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.1.4: Update README.md
+6a49c26 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+4b2a187 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.1.2: Move models to GPU and change outliers
+13a104a HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+798b5e7 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+1533778 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+61ff13e HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+05fa402 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+3daada2 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+190dbb8 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+2f770e9 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.4: Update trimmed means
+8d25e78 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+7b90bc7 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+5154899 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+8b52ca0 HEAD@{2023-05-30 21:19:35 -0400}: rebase (pick): V0.0.0: Fork repo and do initial commit
+01ae2d3 HEAD@{2023-05-30 21:19:35 -0400}: rebase (start): checkout 01ae2d3248b6d07990fddf450045ffd9c06cb735
+ad2b85b HEAD@{2023-05-30 21:18:34 -0400}: rebase (finish): returning to refs/heads/main
+ad2b85b HEAD@{2023-05-30 21:15:06 -0400}: rebase (start): checkout brifca
+508f875 HEAD@{2023-05-30 21:14:54 -0400}: checkout: moving from brifca to main
+ad2b85b HEAD@{2023-05-30 21:12:30 -0400}: rebase (finish): returning to refs/heads/brifca
+ad2b85b HEAD@{2023-05-30 21:12:30 -0400}: rebase (squash): V0.1.5: Update synthetic
+2c55bb5 HEAD@{2023-05-30 21:12:30 -0400}: rebase (pick): V0.1.5: Update synthetic
+17fccb3 HEAD@{2023-05-30 21:12:30 -0400}: rebase (pick): V0.1.4: Update README.md
+e36338e HEAD@{2023-05-30 21:12:29 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+c935241 HEAD@{2023-05-30 21:12:29 -0400}: rebase (pick): V0.1.2: Move models to GPU and change outliers
+648b67d HEAD@{2023-05-30 21:12:29 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+d4acdc6 HEAD@{2023-05-30 21:12:29 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+babcb40 HEAD@{2023-05-30 21:12:29 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+1bfafbc HEAD@{2023-05-30 21:12:29 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+f5d7bbb HEAD@{2023-05-30 21:12:29 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+a14f246 HEAD@{2023-05-30 21:12:26 -0400}: rebase (squash): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+5fb48f5 HEAD@{2023-05-30 21:12:26 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+15126db HEAD@{2023-05-30 21:12:18 -0400}: rebase (squash): V0.0.5: Each Byzantine machine has its distribution
+6268939 HEAD@{2023-05-30 21:11:42 -0400}: rebase: fast-forward
+2f770e9 HEAD@{2023-05-30 21:11:42 -0400}: rebase: fast-forward
+8d25e78 HEAD@{2023-05-30 21:11:42 -0400}: rebase: fast-forward
+7b90bc7 HEAD@{2023-05-30 21:11:42 -0400}: rebase: fast-forward
+5154899 HEAD@{2023-05-30 21:11:42 -0400}: rebase: fast-forward
+8b52ca0 HEAD@{2023-05-30 21:11:42 -0400}: rebase: fast-forward
+fe766f3 HEAD@{2023-05-30 21:11:42 -0400}: rebase (start): checkout fe766f34b85eae5287c06b098c22222869f00efa
+9099206 HEAD@{2023-05-30 21:10:37 -0400}: commit: V0.1.5: Update README.md
+74b8039 HEAD@{2023-05-30 21:10:20 -0400}: checkout: moving from main to brifca
+508f875 HEAD@{2023-05-30 21:05:12 -0400}: checkout: moving from brifca to main
+74b8039 HEAD@{2023-05-30 20:43:18 -0400}: rebase (finish): returning to refs/heads/brifca
+74b8039 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.1.5: Update synthetic
+e3fffd3 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.1.4: Update README.md
+f049f9f HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+7d20aea HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.1.2: Move models to GPU and change outliers
+0f49166 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+8010375 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+37f0827 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+b206ea2 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+d619738 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+375c2a9 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+91fb4cb HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+5369276 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+6268939 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+2f770e9 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.4: Update trimmed means
+8d25e78 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+7b90bc7 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+5154899 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+8b52ca0 HEAD@{2023-05-30 20:43:18 -0400}: rebase (pick): V0.0.0: Fork repo and do initial commit
+3c33853 HEAD@{2023-05-30 20:43:18 -0400}: rebase (start): checkout 3c33853a26238d173a52c24a51c1cfd218c844ee
+e475ee2 HEAD@{2023-05-30 20:42:14 -0400}: rebase (finish): returning to refs/heads/brifca
+e475ee2 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.1.5: Update synthetic
+bb56d28 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.1.4: Update README.md
+8f2e5f9 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+d8e9fce HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.1.2: Move models to GPU and change outliers
+01ef839 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+dcbec8f HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+734c8b8 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+6aed596 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+45160c3 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+892bc7d HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+31bc04e HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+a722e0e HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+9c950cd HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+76835b8 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.4: Update trimmed means
+819de3b HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+ecb4a02 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+cffcbe3 HEAD@{2023-05-30 20:42:14 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+2acfde0 HEAD@{2023-05-30 20:42:14 -0400}: rebase (start): checkout 2acfde06
+b0615e2 HEAD@{2023-05-30 20:41:27 -0400}: rebase (finish): returning to refs/heads/brifca
+b0615e2 HEAD@{2023-05-30 20:41:27 -0400}: rebase (pick): V0.1.5: Update synthetic
+aea0887 HEAD@{2023-05-30 20:41:27 -0400}: rebase (pick): V0.1.4: Update README.md
+a978387 HEAD@{2023-05-30 20:41:27 -0400}: rebase (start): checkout a9783872
+b0615e2 HEAD@{2023-05-30 20:28:47 -0400}: rebase (finish): returning to refs/heads/brifca
+b0615e2 HEAD@{2023-05-30 20:28:47 -0400}: rebase (pick): V0.1.5: Update synthetic
+aea0887 HEAD@{2023-05-30 20:28:47 -0400}: rebase (pick): V0.1.4: Update README.md
+a978387 HEAD@{2023-05-30 20:28:47 -0400}: rebase (start): checkout a9783872
+e220c4d HEAD@{2023-05-30 19:53:40 -0400}: Branch: renamed refs/heads/rifca to refs/heads/brifca
+e220c4d HEAD@{2023-05-30 19:49:04 -0400}: rebase (finish): returning to refs/heads/rifca
+e220c4d HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.1.5: Update synthetic
+b4fe3ce HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.1.4: Update README.md
+a978387 HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+3554571 HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.1.2: Move models to GPU and change outliers
+187426b HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+fb08770 HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+6f6a19e HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+5f5aaf9 HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+cf23400 HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+de64615 HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+8a9df8f HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+3966f4c HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+c3b78bb HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+beebcbf HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.4: Update trimmed means
+3fade2b HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+0732267 HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+0124700 HEAD@{2023-05-30 19:49:04 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+2acfde0 HEAD@{2023-05-30 19:48:39 -0400}: rebase (reword): V0.0.0: Fork repo and do initial commit
+dd97b04 HEAD@{2023-05-30 19:48:25 -0400}: rebase: fast-forward
+8c7a414 HEAD@{2023-05-30 19:48:25 -0400}: rebase (start): checkout 8c7a414f88f55e7b4bf452b62b08ddd0566c7db1
+508f875 HEAD@{2023-05-30 19:47:37 -0400}: reset: moving to 508f8750038d8226fd5da8303de0b045feaa5076
+f00fa3b HEAD@{2023-05-30 19:39:14 -0400}: rebase (finish): returning to refs/heads/rifca
+f00fa3b HEAD@{2023-05-30 19:38:58 -0400}: rebase (continue): V0.1.4: Update README.md
+5f69cfa HEAD@{2023-05-30 19:38:40 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+5ff51fe HEAD@{2023-05-30 19:38:36 -0400}: rebase (continue): V0.1.2: Add GPU
+aaa1dc4 HEAD@{2023-05-30 19:38:05 -0400}: rebase (continue): V0.1.1: Add small_set_mnist
+bc22ba0 HEAD@{2023-05-30 19:37:51 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+05bab94 HEAD@{2023-05-30 19:36:02 -0400}: rebase (continue): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+13821c0 HEAD@{2023-05-30 19:35:42 -0400}: rebase (continue): V0.0.5: Each Byzantine machine has its distribution
+c13eb74 HEAD@{2023-05-30 19:35:01 -0400}: rebase (continue): V0.0.4:Update trimmed means
+01aa119 HEAD@{2023-05-30 19:34:10 -0400}: rebase (continue): V0.0.3: Change Binomial distribution to Bernoulli distribution
+9ae6184 HEAD@{2023-05-30 19:33:25 -0400}: rebase (continue): V0.0.2: Add coordinate-wise median and trimmed mean
+ce2743f HEAD@{2023-05-30 19:32:42 -0400}: rebase (continue): V0.0.1: Add Byzantine machines to synthetic data
+ae26459 HEAD@{2023-05-30 19:29:59 -0400}: rebase (continue): Initial commit
+508f875 HEAD@{2023-05-30 19:23:41 -0400}: rebase (start): checkout main
+2286c19 HEAD@{2023-05-30 19:20:46 -0400}: rebase (abort): returning to refs/heads/rifca
+44d0877 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.1.5: Update synthetic
+258b16b HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.1.4: Update README.md
+f2a93ca HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+ac301c6 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.1.2: Add GPU
+4048b91 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+f57e917 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+581edad HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+e5ec5af HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+ab5ab56 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+6a59297 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+42c5bc6 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+a33c6ed HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+f031042 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+a0dacd5 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.4:Update trimmed means
+49aecef HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+2d45b43 HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+584577c HEAD@{2023-05-30 19:20:05 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+5de18b8 HEAD@{2023-05-30 19:20:05 -0400}: rebase (reword): Initial commit
+a681bc7 HEAD@{2023-05-30 19:20:05 -0400}: rebase (start): checkout a681bc7203202ebcc9886261276d3134dc56bd61
+2286c19 HEAD@{2023-05-30 19:19:53 -0400}: rebase (abort): returning to refs/heads/rifca
+508f875 HEAD@{2023-05-30 19:19:32 -0400}: rebase (start): checkout main
+2286c19 HEAD@{2023-05-30 19:18:46 -0400}: rebase (finish): returning to refs/heads/rifca
+2286c19 HEAD@{2023-05-30 19:18:46 -0400}: rebase (start): checkout rifca
+2286c19 HEAD@{2023-05-30 19:09:09 -0400}: reset: moving to 2286c19
+508f875 HEAD@{2023-05-30 19:04:37 -0400}: checkout: moving from main to rifca
+508f875 HEAD@{2023-05-30 19:03:56 -0400}: rebase (finish): returning to refs/heads/main
+508f875 HEAD@{2023-05-30 19:03:14 -0400}: rebase (start): checkout rifca
+2286c19 HEAD@{2023-05-30 19:02:27 -0400}: commit (merge): merge form rifca
+c7dbab3 HEAD@{2023-05-30 19:01:34 -0400}: reset: moving to HEAD
+c7dbab3 HEAD@{2023-05-30 18:59:15 -0400}: checkout: moving from rifca to main
+508f875 HEAD@{2023-05-30 18:58:55 -0400}: rebase (abort): returning to refs/heads/rifca
+c842e28 HEAD@{2023-05-30 18:58:09 -0400}: rebase (start): checkout c842e286312768e540323df9f15e9afcf8d081c5
+508f875 HEAD@{2023-05-30 18:55:17 -0400}: commit (amend): V0.1.5: Update synthetic
+7d47b3d HEAD@{2023-05-30 18:55:01 -0400}: rebase (abort): returning to refs/heads/rifca
+a42e73e HEAD@{2023-05-30 18:54:32 -0400}: rebase (start): checkout a42e73ec525dfdb41d18daa84c332f30daa0a063
+7d47b3d HEAD@{2023-05-30 18:54:16 -0400}: rebase (abort): returning to refs/heads/rifca
+3b34337 HEAD@{2023-05-30 18:52:58 -0400}: rebase (start): checkout 3b343371ca2980f7f84c92076d1a4d522ddfdc96
+7d47b3d HEAD@{2023-05-30 18:52:29 -0400}: commit: recovery cifar
+745a0c6 HEAD@{2023-05-30 18:47:45 -0400}: reset: moving to 745a0c6
+83cdceb HEAD@{2023-05-30 18:47:01 -0400}: reset: moving to 83cdcebda9fd7e47a1809fe7229dac6b9fd63242
+83cdceb HEAD@{2023-05-30 18:46:15 -0400}: reset: moving to 83cdcebda9fd7e47a1809fe7229dac6b9fd63242
+83cdceb HEAD@{2023-05-30 18:41:55 -0400}: reset: moving to 83cdcebda9fd7e47a1809fe7229dac6b9fd63242
+745a0c6 HEAD@{2023-05-30 18:34:26 -0400}: rebase (finish): returning to refs/heads/rifca
+745a0c6 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.1.4: Update README.md
+63c9a87 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+83cdceb HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.1.2: Move models to GPU and change outliers
+4941606 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+c30357e HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+aca094a HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+3c08462 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+3461e91 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+54dfd45 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+d0b1db8 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+b7f583b HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+e1276ac HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+183b024 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.4: Update trimmed means
+570f556 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+34faa43 HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+dcb4d8d HEAD@{2023-05-30 18:34:26 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+dd97b04 HEAD@{2023-05-30 18:34:00 -0400}: rebase (reword): Fork repo and do initial commit
+4f2df04 HEAD@{2023-05-30 18:33:49 -0400}: rebase: fast-forward
+f9ed61d HEAD@{2023-05-30 18:33:49 -0400}: rebase (start): checkout f9ed61d01a36f075cc870f5b82a1177ed82f5f7e
+8f13666 HEAD@{2023-05-30 18:33:16 -0400}: rebase (finish): returning to refs/heads/rifca
+8f13666 HEAD@{2023-05-30 18:33:16 -0400}: rebase (squash): V0.1.4: Update README.md
+cca39f3 HEAD@{2023-05-30 18:33:16 -0400}: rebase (squash): # This is a combination of 2 commits.
+c1512b4 HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.1.4: Update README.md
+9053e26 HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+7fc8285 HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.1.2: Move models to GPU and change outliers
+b627540 HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+20f908f HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+791f3d1 HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+bbd8cce HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+292e1d0 HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+97baaf0 HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+16abd02 HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+83f273a HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+1dfe06f HEAD@{2023-05-30 18:33:16 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+9e5efce HEAD@{2023-05-30 18:33:09 -0400}: rebase (reword): V0.0.4: Update trimmed means
+8a0345c HEAD@{2023-05-30 18:33:09 -0400}: rebase: fast-forward
+cf3f0a2 HEAD@{2023-05-30 18:33:09 -0400}: rebase: fast-forward
+655a3b6 HEAD@{2023-05-30 18:33:09 -0400}: rebase: fast-forward
+5eb0102 HEAD@{2023-05-30 18:33:09 -0400}: rebase: fast-forward
+4f2df04 HEAD@{2023-05-30 18:31:59 -0400}: rebase: fast-forward
+abd9894 HEAD@{2023-05-30 18:31:59 -0400}: rebase (start): checkout abd9894e07617c378f44879160dbdc78e8917ab3
+f380382 HEAD@{2023-05-30 18:31:07 -0400}: rebase (finish): returning to refs/heads/rifca
+f380382 HEAD@{2023-05-30 18:31:07 -0400}: rebase (pick):
+0af12b3 HEAD@{2023-05-30 18:31:07 -0400}: rebase (pick): V0.1.5: Update synthetic
+8fec80f HEAD@{2023-05-30 18:31:07 -0400}: rebase (pick): V0.1.4: Update README.md
+26a7de5 HEAD@{2023-05-30 18:31:06 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+65b42de HEAD@{2023-05-30 18:30:38 -0400}: rebase (reword): V0.1.2: Move models to GPU and change outliers
+f5d9194 HEAD@{2023-05-30 18:30:38 -0400}: rebase (reword): V0.1.2: Add GPU
+07980e6 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+2cb788f HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+dbda1c1 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+c7fe253 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+4a99978 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+d064c19 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+95bf014 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+b58ec9b HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+fe687e7 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+8a0345c HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.4:Update trimmed means
+cf3f0a2 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+655a3b6 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+5eb0102 HEAD@{2023-05-30 18:30:38 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+4f2df04 HEAD@{2023-05-30 18:29:46 -0400}: rebase (reword): Fork repo and do initial commit
+952622d HEAD@{2023-05-30 18:28:57 -0400}: rebase: fast-forward
+ab4decf HEAD@{2023-05-30 18:28:57 -0400}: rebase (start): checkout ab4decfb0ec01f1fa0efaf0fceceb374d5470828
+e821208 HEAD@{2023-05-30 18:28:33 -0400}: pull github rifca (finish): returning to refs/heads/rifca
+e821208 HEAD@{2023-05-30 18:28:33 -0400}: pull github rifca (pick):
+c7dbab3 HEAD@{2023-05-30 18:28:33 -0400}: pull github rifca (start): checkout c7dbab3df7b831ce9e3b9a54552ecf110986df87
+aac162e HEAD@{2023-05-30 18:26:01 -0400}: rebase (finish): returning to refs/heads/rifca
+aac162e HEAD@{2023-05-30 18:25:13 -0400}: rebase (start): checkout aac162e086d106d4e38c6b5095616070e782beae
+288eda3 HEAD@{2023-05-30 18:23:44 -0400}: rebase (finish): returning to refs/heads/rifca
+288eda3 HEAD@{2023-05-30 18:23:44 -0400}: rebase (squash): V0.1.4: Update README.md
+71aef7e HEAD@{2023-05-30 18:23:44 -0400}: rebase (pick): V0.1.4: Update README.md
+ea69aeb HEAD@{2023-05-30 18:23:44 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+cb80df1 HEAD@{2023-05-30 18:22:53 -0400}: rebase (reword): V0.1.2: Move models to GPU and change outliers
+b309583 HEAD@{2023-05-30 18:22:52 -0400}: rebase (reword): V0.1.2: Add GPU
+d1696b1 HEAD@{2023-05-30 18:22:52 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+8865d7c HEAD@{2023-05-30 18:22:52 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+cee09b2 HEAD@{2023-05-30 18:22:52 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+2b0ff41 HEAD@{2023-05-30 18:22:52 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+60a8945 HEAD@{2023-05-30 18:22:52 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+5f8311a HEAD@{2023-05-30 18:22:49 -0400}: rebase (squash): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+acbe4c8 HEAD@{2023-05-30 18:22:49 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+4b92a1d HEAD@{2023-05-30 18:22:39 -0400}: rebase (squash): V0.0.5: Each Byzantine machine has its distribution
+08f8ed2 HEAD@{2023-05-30 18:21:30 -0400}: rebase: fast-forward
+946b9fb HEAD@{2023-05-30 18:21:30 -0400}: rebase: fast-forward
+22abf7a HEAD@{2023-05-30 18:21:30 -0400}: rebase: fast-forward
+39ea83d HEAD@{2023-05-30 18:21:30 -0400}: rebase: fast-forward
+9184ead HEAD@{2023-05-30 18:21:30 -0400}: rebase: fast-forward
+952622d HEAD@{2023-05-30 18:21:30 -0400}: rebase: fast-forward
+5d2af6a HEAD@{2023-05-30 18:21:30 -0400}: rebase (start): checkout 5d2af6a91beae76b25d8e91d19dcbbd948792f9b
+c7dbab3 HEAD@{2023-05-30 18:19:55 -0400}: rebase (finish): returning to refs/heads/rifca
+c7dbab3 HEAD@{2023-05-30 18:14:57 -0400}: rebase (start): checkout main
+bd50d12 HEAD@{2023-05-30 17:56:49 -0400}: checkout: moving from bd50d12b7f6c83abbafa6a55ff04916f1468afe6 to rifca
+bd50d12 HEAD@{2023-05-30 17:56:30 -0400}: checkout: moving from rifca to bd50d12b7f6c83abbafa6a55ff04916f1468afe6
+bd50d12 HEAD@{2023-05-30 17:54:03 -0400}: reset: moving to bd50d12b7f6c83abbafa6a55ff04916f1468afe6
+bd50d12 HEAD@{2023-05-30 17:43:11 -0400}: merge main: Merge made by the 'ort' strategy.
+10d9c2c HEAD@{2023-05-30 17:41:33 -0400}: Branch: renamed refs/heads/list to refs/heads/rifca
+10d9c2c HEAD@{2023-05-30 17:41:19 -0400}: checkout: moving from 20230530 to list
+10d9c2c HEAD@{2023-05-30 17:40:28 -0400}: Branch: renamed refs/heads/rifca to refs/heads/20230530
+10d9c2c HEAD@{2023-05-30 17:38:54 -0400}: checkout: moving from main to rifca
+c7dbab3 HEAD@{2023-05-30 17:33:09 -0400}: checkout: moving from rifca to main
+10d9c2c HEAD@{2023-05-30 17:28:52 -0400}: checkout: moving from main to rifca
+c7dbab3 HEAD@{2023-05-30 17:26:41 -0400}: checkout: moving from rifca to main
+10d9c2c HEAD@{2023-05-30 17:26:13 -0400}: Branch: renamed refs/heads/rifca2 to refs/heads/rifca
+10d9c2c HEAD@{2023-05-30 17:26:00 -0400}: checkout: moving from main to rifca2
+c7dbab3 HEAD@{2023-05-30 17:25:27 -0400}: Branch: renamed refs/heads/rifca to refs/heads/main
+c7dbab3 HEAD@{2023-05-30 17:25:21 -0400}: checkout: moving from rifca2 to rifca
+10d9c2c HEAD@{2023-05-30 17:25:01 -0400}: Branch: renamed refs/heads/main to refs/heads/rifca2
+10d9c2c HEAD@{2023-05-30 17:24:42 -0400}: checkout: moving from rifca to main
+c7dbab3 HEAD@{2023-05-30 17:17:06 -0400}: rebase (finish): returning to refs/heads/rifca
+c7dbab3 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.1.5: Update synthetic
+4afa6a1 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.1.4: Update README.md
+8b54902 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+a5322f7 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.1.2: Add GPU
+ef7a905 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+0a0a079 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+1c5488f HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+b1fdc8c HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+9949490 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+88e0e57 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+b30c9cc HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+1bc4a0b HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+08f8ed2 HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+946b9fb HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.4:Update trimmed means
+22abf7a HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+39ea83d HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+9184ead HEAD@{2023-05-30 17:17:06 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+952622d HEAD@{2023-05-30 17:17:02 -0400}: rebase (squash): Initial commit
+e54e257 HEAD@{2023-05-30 17:17:02 -0400}: rebase (squash): # This is a combination of 6 commits.
+d39ce53 HEAD@{2023-05-30 17:17:02 -0400}: rebase (squash): # This is a combination of 5 commits.
+7fcb6d9 HEAD@{2023-05-30 17:17:01 -0400}: rebase (squash): # This is a combination of 4 commits.
+77ce89a HEAD@{2023-05-30 17:17:01 -0400}: rebase (squash): # This is a combination of 3 commits.
+80274dd HEAD@{2023-05-30 17:17:01 -0400}: rebase (squash): # This is a combination of 2 commits.
+416dc1d HEAD@{2023-05-30 17:16:38 -0400}: rebase: fast-forward
+bcf4efa HEAD@{2023-05-30 17:16:38 -0400}: rebase (start): checkout bcf4efa32498d06fe660ce545c4a105afea62315
+4afa66f HEAD@{2023-05-30 17:16:01 -0400}: rebase (finish): returning to refs/heads/rifca
+4afa66f HEAD@{2023-05-30 17:16:01 -0400}: rebase (pick): V0.1.5: Update synthetic
+0027dfe HEAD@{2023-05-30 17:16:01 -0400}: rebase (pick): V0.1.4: Update README.md
+893b343 HEAD@{2023-05-30 17:16:01 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+f15e99a HEAD@{2023-05-30 17:16:01 -0400}: rebase (pick): V0.1.2: Add GPU
+7d7abcd HEAD@{2023-05-30 17:16:01 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+c717f72 HEAD@{2023-05-30 17:16:01 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+9e50311 HEAD@{2023-05-30 17:16:01 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+92d75db HEAD@{2023-05-30 17:15:56 -0400}: rebase (squash): V0.0.8: Update geometric_median()
+948d68c HEAD@{2023-05-30 17:15:56 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+ccbc9e0 HEAD@{2023-05-30 17:15:56 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+82ef7af HEAD@{2023-05-30 17:15:49 -0400}: rebase (squash): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+343ae34 HEAD@{2023-05-30 17:15:49 -0400}: rebase (squash): # This is a combination of 2 commits.
+aeb2a96 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+2881934 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+8335331 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+c3c4c57 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+9a3178b HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+1dff446 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+d248754 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+70f28be HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+ebb810f HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+e8715f0 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+c7ba398 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+c29038a HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+4481b18 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+97db9d1 HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+416dc1d HEAD@{2023-05-30 17:15:22 -0400}: rebase: fast-forward
+461a4db HEAD@{2023-05-30 17:15:22 -0400}: rebase (start): checkout 461a4dba71da880042b1448f1dac0ff65631e363
+9b2c2bc HEAD@{2023-05-30 17:13:40 -0400}: rebase (finish): returning to refs/heads/rifca
+9b2c2bc HEAD@{2023-05-30 17:13:40 -0400}: rebase (pick): V0.1.5: Update synthetic
+8d5e0b4 HEAD@{2023-05-30 17:13:11 -0400}: rebase (reword): V0.1.4: Update README.md
+d8bfd0e HEAD@{2023-05-30 17:13:11 -0400}: rebase (reword): V0.1.4: Update README.md
+67adc7a HEAD@{2023-05-30 17:13:06 -0400}: rebase (reword): V0.1.3: Update gradient computing for server update
+4a77e74 HEAD@{2023-05-30 17:13:06 -0400}: rebase (reword): V0.1.3: Update gradient computing for server update
+40f1d87 HEAD@{2023-05-30 17:12:59 -0400}: rebase (reword): V0.1.2: Add GPU
+719087f HEAD@{2023-05-30 17:12:59 -0400}: rebase (reword): V0.1.2: Add GPU
+331a273 HEAD@{2023-05-30 17:12:54 -0400}: rebase (reword): V0.1.1: Add small_set_mnist
+d06d4ae HEAD@{2023-05-30 17:12:53 -0400}: rebase (reword): V0.1.1: Add small_set_mnist
+ddc4560 HEAD@{2023-05-30 17:12:48 -0400}: rebase (reword): V0.1.0: Update train_cluster_mnist.py in "mnist"
+ff3fae5 HEAD@{2023-05-30 17:12:48 -0400}: rebase (reword): V0.1.0: Update train_cluster_mnist.py in "mnist"
+9424493 HEAD@{2023-05-30 17:12:43 -0400}: rebase (reword): V0.0.9: Get n_cpu_cores by psutil
+1624fd7 HEAD@{2023-05-30 17:12:42 -0400}: rebase (reword): V0.0.9: Get n_cpu_cores by psutil
+a46ed65 HEAD@{2023-05-30 17:12:38 -0400}: rebase (reword): V0.0.8: Update geometric_median()
+66f26e0 HEAD@{2023-05-30 17:12:38 -0400}: rebase (reword): V0.0.8: Update geometric_median()
+6fb3581 HEAD@{2023-05-30 17:12:33 -0400}: rebase (reword): V0.0.8: Update geometric_median()
+0e68e27 HEAD@{2023-05-30 17:12:33 -0400}: rebase (reword): V0.0.8: Update geometric_median()
+a02c0f0 HEAD@{2023-05-30 17:12:28 -0400}: rebase (reword): V0.0.7: Add init_method=true for geometric_median()
+6076596 HEAD@{2023-05-30 17:12:28 -0400}: rebase (reword): V0.0.7: Add init_method=true for geometric_median()
+7de5eaa HEAD@{2023-05-30 17:12:22 -0400}: rebase (reword): V0.0.6-2: Fix errors in geometric_kmeans()
+ba5ea6c HEAD@{2023-05-30 17:12:22 -0400}: rebase (reword): V0.0.6-2: Fix errors in geometric_kmeans()
+67c6d30 HEAD@{2023-05-30 17:12:15 -0400}: rebase (reword): V0.0.6-1: Update geometric_kmeans()
+b2ab235 HEAD@{2023-05-30 17:12:15 -0400}: rebase (reword): V0.0.6-1: Update geometric_kmeans()
+aeb2a96 HEAD@{2023-05-30 17:12:10 -0400}: rebase (reword): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+b9c6d46 HEAD@{2023-05-30 17:12:10 -0400}: rebase (reword): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+2881934 HEAD@{2023-05-30 17:12:05 -0400}: rebase (reword): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+38ba78e HEAD@{2023-05-30 17:12:05 -0400}: rebase (reword): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+8335331 HEAD@{2023-05-30 17:12:00 -0400}: rebase (reword): V0.0.5: Each Byzantine machine has its distribution
+f2600fe HEAD@{2023-05-30 17:12:00 -0400}: rebase (reword): V0.0.5: Each Byzantine machine has its distribution
+c3c4c57 HEAD@{2023-05-30 17:11:54 -0400}: rebase (reword): V0.0.5: Each Byzantine machine has its distribution
+fe6dc12 HEAD@{2023-05-30 17:11:54 -0400}: rebase (reword): V0.0.5: Each Byzantine machine has its distribution
+9a3178b HEAD@{2023-05-30 17:11:47 -0400}: rebase (reword): V0.0.4:Update trimmed means
+4dd74b5 HEAD@{2023-05-30 17:11:47 -0400}: rebase (reword): V0.0.4:Update trimmed means
+1dff446 HEAD@{2023-05-30 17:11:38 -0400}: rebase (reword): V0.0.3: Change Binomial distribution to Bernoulli distribution
+68a3472 HEAD@{2023-05-30 17:11:38 -0400}: rebase (reword): V0.0.3: Change Binomial distribution to Bernoulli distribution
+d248754 HEAD@{2023-05-30 17:11:30 -0400}: rebase (reword): V0.0.2: Add coordinate-wise median and trimmed mean
+ac7b912 HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+70f28be HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+ebb810f HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+e8715f0 HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+c7ba398 HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+c29038a HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+4481b18 HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+97db9d1 HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+416dc1d HEAD@{2023-05-30 17:10:11 -0400}: rebase: fast-forward
+fa5596b HEAD@{2023-05-30 17:10:11 -0400}: rebase (start): checkout fa5596bb8c81601925d2b6b3758066506e8210f6
+675c746 HEAD@{2023-05-30 17:09:28 -0400}: rebase (finish): returning to refs/heads/rifca
+675c746 HEAD@{2023-05-30 17:09:28 -0400}: rebase (pick): V0.1.5: Update synthetic
+ebd88e3 HEAD@{2023-05-30 17:09:28 -0400}: rebase (pick): V0.1.4: Update README.md
+c28c605 HEAD@{2023-05-30 17:09:28 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+787179e HEAD@{2023-05-30 17:09:28 -0400}: rebase (pick): V0.1.2: Add GPU
+11da814 HEAD@{2023-05-30 17:09:28 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+527a9fd HEAD@{2023-05-30 17:09:28 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+d871954 HEAD@{2023-05-30 17:09:28 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+e42174a HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+defc4e9 HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+d4ef020 HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+69b3293 HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.6-2: Fix errors in geometric_kmeans()
+73d027e HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.6-1: Update geometric_kmeans()
+4e4bd1f HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+5512a74 HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+639e33b HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+14d2726 HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+b83c989 HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.4:Update trimmed means
+663576e HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+ac7b912 HEAD@{2023-05-30 17:09:27 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+70f28be HEAD@{2023-05-30 17:09:21 -0400}: rebase (reword): V0.0.1: Add Byzantine machines to synthetic data
+0ae7689 HEAD@{2023-05-30 17:09:01 -0400}: rebase: fast-forward
+ebb810f HEAD@{2023-05-30 17:09:01 -0400}: rebase: fast-forward
+e8715f0 HEAD@{2023-05-30 17:09:01 -0400}: rebase: fast-forward
+c7ba398 HEAD@{2023-05-30 17:09:01 -0400}: rebase: fast-forward
+c29038a HEAD@{2023-05-30 17:09:01 -0400}: rebase: fast-forward
+4481b18 HEAD@{2023-05-30 17:09:01 -0400}: rebase: fast-forward
+97db9d1 HEAD@{2023-05-30 17:09:01 -0400}: rebase: fast-forward
+416dc1d HEAD@{2023-05-30 17:09:01 -0400}: rebase: fast-forward
+8b6368d HEAD@{2023-05-30 17:09:01 -0400}: rebase (start): checkout 8b6368d4629ac923080054ad3f850f8bd95ac3e2
+a24ce6b HEAD@{2023-05-30 17:06:05 -0400}: commit: V0.1.5: Update synthetic
+22d6f05 HEAD@{2023-05-30 16:57:40 -0400}: checkout: moving from list to rifca
+10d9c2c HEAD@{2023-05-30 16:57:16 -0400}: rebase (abort): returning to refs/heads/list
+8fda312 HEAD@{2023-05-30 16:56:54 -0400}: rebase (continue): V0.0.5: Each Byzantine machine has its distribution
+8d9d6a3 HEAD@{2023-05-30 16:56:52 -0400}: rebase (pick): V0.0.4:Update trimmed means
+38b4380 HEAD@{2023-05-30 16:56:47 -0400}: rebase (continue): V0.0.3: Change Binomial distribution to Bernoulli distribution
+cf9374f HEAD@{2023-05-30 16:56:41 -0400}: rebase (continue): V0.0.2: Add coordinate-wise median and trimmed mean
+2f6d717 HEAD@{2023-05-30 16:56:30 -0400}: rebase (continue): V0.0.1: Add Byzantine machines to synthetic data
+dc211f2 HEAD@{2023-05-30 16:56:06 -0400}: rebase (continue): Update README.md
+a6a8c77 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): delete .gitignore
+25a52a1 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.1.4: Update synthetic
+15b805f HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.1.4-1: Update mnist
+26a4c80 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.1.4: Update README.md
+7852497 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+21c7fcb HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.1.2: Add GPU
+af1878f HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+d7a53d4 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+ab0ed4a HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+437f941 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+ed4ff78 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+a91e535 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+8c95186 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.6-2: Fix errors in geometric_kmeans()
+e83cf99 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.6-1: Update geometric_kmeans()
+6afd0a7 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+00b28c1 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+13cecfd HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+253fa7f HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+ef00562 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.4:Update trimmed means
+b244a56 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+54ec860 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+d2de793 HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+ee3a9be HEAD@{2023-05-30 16:55:52 -0400}: rebase (pick): Update README.md
+e8715f0 HEAD@{2023-05-30 16:55:51 -0400}: rebase (start): checkout e8715f0338a0ec268180dfca918bf370ad47fb70
+10d9c2c HEAD@{2023-05-30 16:54:08 -0400}: checkout: moving from main to list
+10d9c2c HEAD@{2023-05-30 16:43:16 -0400}: merge rifca: Merge made by the 'ort' strategy.
+daa960a HEAD@{2023-05-30 16:43:08 -0400}: checkout: moving from rifca to main
+22d6f05 HEAD@{2023-05-30 16:42:04 -0400}: rebase (finish): returning to refs/heads/rifca
+22d6f05 HEAD@{2023-05-30 16:42:04 -0400}: rebase (squash): V0.1.4: Update README.md
+141a113 HEAD@{2023-05-30 16:42:04 -0400}: rebase (squash): # This is a combination of 3 commits.
+dda079a HEAD@{2023-05-30 16:42:04 -0400}: rebase (squash): # This is a combination of 2 commits.
+d260b14 HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.1.4: Update README.md
+857bb08 HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.1.3: Update gradient computing for server update
+8ecdfbd HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.1.2: Add GPU
+16e36ac HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.1.1: Add small_set_mnist
+75877da HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.1.0: Update train_cluster_mnist.py in "mnist"
+883569f HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.9: Get n_cpu_cores by psutil
+37b6ffc HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+c1f022b HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.8: Update geometric_median()
+72670e6 HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.7: Add init_method=true for geometric_median()
+59541f1 HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.6-2: Fix errors in geometric_kmeans()
+115978c HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.6-1: Update geometric_kmeans()
+f98559b HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+5f3834a HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+7c16cea HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+d05c62b HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.5: Each Byzantine machine has its distribution
+8989f4f HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.4:Update trimmed means
+ad9facc HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.3: Change Binomial distribution to Bernoulli distribution
+cc4d5ed HEAD@{2023-05-30 16:42:04 -0400}: rebase (pick): V0.0.2: Add coordinate-wise median and trimmed mean
+0ae7689 HEAD@{2023-05-30 16:42:03 -0400}: rebase (pick): V0.0.1: Add Byzantine machines to synthetic data
+ebb810f HEAD@{2023-05-30 16:42:03 -0400}: rebase (pick): Update README.md
+e8715f0 HEAD@{2023-05-30 16:41:43 -0400}: rebase: fast-forward
+c7ba398 HEAD@{2023-05-30 16:41:43 -0400}: rebase: fast-forward
+c29038a HEAD@{2023-05-30 16:41:43 -0400}: rebase: fast-forward
+4481b18 HEAD@{2023-05-30 16:41:43 -0400}: rebase: fast-forward
+97db9d1 HEAD@{2023-05-30 16:41:43 -0400}: rebase: fast-forward
+416dc1d HEAD@{2023-05-30 16:41:43 -0400}: rebase: fast-forward
+3a5004e HEAD@{2023-05-30 16:41:43 -0400}: rebase (start): checkout 3a5004ee087f25c0385c8e6dcda58ea3eec4acd3
+daa960a HEAD@{2023-05-30 16:41:24 -0400}: rebase (abort): returning to refs/heads/rifca
+97db9d1 HEAD@{2023-05-30 16:40:32 -0400}: rebase: fast-forward
+416dc1d HEAD@{2023-05-30 16:40:32 -0400}: rebase: fast-forward
+15be28a HEAD@{2023-05-30 16:40:32 -0400}: rebase (start): checkout 15be28a64156ee8774b1c73d0986eb5e19522639
+daa960a HEAD@{2023-05-30 16:40:13 -0400}: rebase (abort): returning to refs/heads/rifca
+1d83bd0 HEAD@{2023-05-30 16:37:55 -0400}: rebase (pick): init2
+a0fb7a3 HEAD@{2023-05-30 16:37:47 -0400}: rebase (start): checkout a0fb7a3b0dd6a00c8056bf32fb58ab6aeb8efab6
+daa960a HEAD@{2023-05-30 16:37:00 -0400}: checkout: moving from main to rifca
+daa960a HEAD@{2023-05-30 16:35:52 -0400}: rebase (abort): returning to refs/heads/main
+8f11c9b HEAD@{2023-05-30 16:35:01 -0400}: rebase (start): checkout 8f11c9b401ca41700ef6d2636676ff44391ee543
+daa960a HEAD@{2023-05-30 16:34:23 -0400}: rebase (abort): returning to refs/heads/main
+d6f7892 HEAD@{2023-05-30 16:30:26 -0400}: rebase (start): checkout d6f78923fd98b0360a9489c0574c584e6c7e1e21
+daa960a HEAD@{2023-05-30 14:04:40 -0400}: merge rifca: Fast-forward
+5f7e8ff HEAD@{2023-05-30 14:04:17 -0400}: checkout: moving from rifca to main
+daa960a HEAD@{2023-05-30 14:03:45 -0400}: commit: delete .gitignore
+6b6307f HEAD@{2023-05-30 13:54:43 -0400}: commit: V0.1.4: Update synthetic
+5f7e8ff HEAD@{2023-05-30 13:36:12 -0400}: checkout: moving from main to rifca
+5f7e8ff HEAD@{2023-05-30 13:26:33 -0400}: commit: V0.1.4-1: Update mnist
+114082c HEAD@{2023-05-30 13:23:37 -0400}: commit: V0.1.4: Update README.md
+3d474ee HEAD@{2023-05-22 18:50:44 -0400}: commit: V0.1.3: Update gradient computing for server update
+bae2b28 HEAD@{2023-05-22 09:23:21 -0400}: commit: V0.1.2: Add GPU
+1b68feb HEAD@{2023-05-21 10:09:03 -0400}: commit: V0.1.1: Add small_set_mnist
+79e688b HEAD@{2023-05-20 22:01:08 -0400}: commit: V0.1.0: Update train_cluster_mnist.py in "mnist"
+495571f HEAD@{2023-05-17 09:04:17 -0400}: commit: V0.0.9: Get n_cpu_cores by psutil
+3355ca4 HEAD@{2023-05-14 21:41:11 -0400}: commit: V0.0.8: Update geometric_median()
+4c3c537 HEAD@{2023-05-14 20:47:48 -0400}: commit: V0.0.8: Update geometric_median()
+10599d2 HEAD@{2023-05-13 21:28:25 -0400}: commit: V0.0.7: Add init_method=true for geometric_median()
+370756d HEAD@{2023-05-12 23:39:12 -0400}: commit: V0.0.6-2: Fix errors in geometric_kmeans()
+57d2786 HEAD@{2023-05-12 18:16:30 -0400}: commit: V0.0.6-1: Update geometric_kmeans()
+46f9f41 HEAD@{2023-05-12 14:22:04 -0400}: commit: V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+08e48f2 HEAD@{2023-05-12 10:09:22 -0400}: commit: V0.0.6: Add train_cluster_baseline and submit mutli-jobs onto HPC
+cf55fda HEAD@{2023-05-10 17:41:17 -0400}: commit: V0.0.5: Each Byzantine machine has its distribution
+3afd049 HEAD@{2023-05-10 11:37:17 -0400}: commit: V0.0.5: Each Byzantine machine has its distribution
+c23bc47 HEAD@{2023-05-08 12:29:43 -0400}: commit: V0.0.4:Update trimmed means
+99c4ca4 HEAD@{2023-05-05 10:21:24 -0400}: commit: V0.0.3: Change Binomial distribution to Bernoulli distribution
+107b0c5 HEAD@{2023-05-03 22:56:44 -0400}: commit: V0.0.2: Add coordinate-wise median and trimmed mean
+3910115 HEAD@{2023-04-17 23:40:03 -0400}: commit: V0.0.1: Add Byzantine machines to synthetic data
+61e44b8 HEAD@{2023-04-17 09:58:49 -0400}: clone: from https://github.com/jichan3751/ifca.git

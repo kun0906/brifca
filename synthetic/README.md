@@ -1,6 +1,6 @@
-# RIFCA
+# BRIFCA
 
-RIFCA is a Python library adapted from [IFCA](https://arxiv.org/abs/2006.04088)
+BRIFCA is a Python library adapted from [IFCA](https://arxiv.org/abs/2006.04088)
  for robust federated learning. 
 
 This part is for synthetic experiments. 

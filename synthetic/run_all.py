@@ -35,7 +35,7 @@ parser.add_argument("--alg_method", type=str, default='baseline')
 args = parser.parse_args()
 
 # OUT_DIR = 'output-K_5-Baseline-TrueCentroids'
-OUT_DIR = 'output-K_15'
+# OUT_DIR = 'output-K_15'
 # OUT_DIR = 'output-K_5-Proposed-alpha_01-beta_01'
 def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
     max_procs = min(30, n_cpucores)    # 4

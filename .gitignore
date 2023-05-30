@@ -1,6 +1,3 @@
-/femnist/
-/mnist/
-/mnist2/
 .DS_Store
 .idea/
 
@@ -11,3 +8,8 @@
 /synthetic/sh/
 */__pycache__/
 
+/mnist/alpha_01-beta_01/
+/mnist/data/
+/mnist/output/
+/mnist/sh/
+/mnist/small_set-alpha_01-beta_01/
