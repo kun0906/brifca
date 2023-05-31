@@ -13,3 +13,6 @@
 /mnist/output/
 /mnist/sh/
 /mnist/small_set-alpha_01-beta_01/
+/cifar/
+/femnist/
+/mnist/
