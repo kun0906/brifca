@@ -1,7 +1,13 @@
-"""
+"""Don't use multiple values here (e.g., n and d).
+    This script is used to obtain single results with the same setting.
+    All the n, d, and others can be configured at 'sbatch_nobel.sh'.
+
     module load anaconda3/2021.11
     conda activate py3104_ifca
     PYTHONPATH='..' PYTHONUNBUFFERED=TRUE python3 run_all.py > 'output/log.txt' 2>&1 &
+
+    Once you get all each result, next you can collect them by collect_all_results.py
+    After that, you can show the results by plot_result.py
 
 """
 import os
@@ -16,7 +22,7 @@ import numpy as np
 from process_runner import *
 import multiprocessing
 n_cpucores1 = multiprocessing.cpu_count()
-n_cpucores = psutil.cpu_count(logical = False)
+n_cpucores = psutil.cpu_count(logical = True)
 # os.cpu_count() returns the number of logical processors within the machines CPU, also known as threads.
 # If it returns 8 then your machine has 8 threads, not cores.
 # https://stackoverflow.com/questions/63557881/why-my-cpu-core-number-is-2-but-use-multiprocessing-cpu-count-get-4
@@ -32,11 +38,19 @@ parser.add_argument("-n", type=int, default=100)
 parser.add_argument("-d", type=int, default=20)
 parser.add_argument("--update_method", type=str, default='trimmed_mean')
 parser.add_argument("--alg_method", type=str, default='baseline')
+parser.add_argument("--out_dir", type=str, default='OUT')
 args = parser.parse_args()
 
+# here K is the number of clusters, i.e., p
 # OUT_DIR = 'output-K_5-Baseline-TrueCentroids'
-# OUT_DIR = 'output-K_15'
+# OUT_DIR = f'output-n_{args.n}-d_{args.d}-{args.update_method}-{args.alg_method}'
 # OUT_DIR = 'output-K_5-Proposed-alpha_01-beta_01'
+OUT_DIR = args.out_dir
+
+# p=5, m=200, sigma**2 = 0.2     # noise_scale = sigma = sqrt(0.2) = 0.4472
+# p=10, m=400, sigma**2 = 0.2    # noise_scale = sigma = sqrt(0.2) = 0.4472
+# p=15, m=600, sigma**2 = 0.2    #noise_scale = sigma = sqrt(0.2) = 0.4472
+
 def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
     max_procs = min(30, n_cpucores)    # 4
 
@@ -49,7 +63,8 @@ def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
             "m": [600],  # number of total machines (Normal + Byzantine)
             'alpha': [0.05],  # percent of Byzantine machines
 
-            "n": [n],  # [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
+            "n": [n],  # don't use multiple n here. this file is used to obtain single results with the same setting.
+            # number of data points per each machine, [50, 100, 200, 400, 800]
 
             "d": [d], #[20, 100, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
 

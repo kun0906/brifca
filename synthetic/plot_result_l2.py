@@ -120,8 +120,7 @@ def extract_data_proposed(results, cfg2, plot_metric='min_dist'):
     del cfg2['data_seed']
     del cfg2['train_seed']
     del cfg2['lr']
-    # del cfg2['alg_method']
-    cfg2['alg_method'] = ['Proposed']
+    del cfg2['alg_method']
 
     cfgs2 = list(product_dict(**cfg2))
 
@@ -166,9 +165,9 @@ def plot_res(plot_data, key_algs=[('baseline-trimmed_mean', 'Baseline'), ], plot
         y_label = '$max_{k}||\\theta-\\theta^{*}||_2$'
     else:
         y_label = plot_metric
-    markers = ['*', '^', 'o', 'v']
-    colors = ['g', 'b', 'purple', 'm']
-    ecolors=['tab:brown', 'tab:red','tab:cyan', 'tab:olive']
+    markers = ['*', '^', 'o', 'v', '+', '<', '>', '.', ',']
+    colors = ['b', 'purple', 'c', 'y',  'm', 'tab:orange', 'g', ]
+    ecolors=[ 'tab:red','tab:cyan', 'tab:olive', 'tab:green','tab:purple','tab:brown',]
 
     res = {}
     for _i, (key, alg_label) in enumerate(key_algs):
@@ -218,18 +217,29 @@ def plot_res(plot_data, key_algs=[('baseline-trimmed_mean', 'Baseline'), ], plot
     # with open("plot_data.pkl", 'wb') as f:
     #     pickle.dump(data1, f)
 
+#
+# def merge_two_dicts(x, y):
+#     z = x.copy()
+#     # z.update(y)
+#
+#     for k, v in y.items():
+#         if k in x.keys():
+#             raise KeyError(k)
+#         z[k] = v
+#
+#     return z
 
-def merge_two_dicts(x, y):
+def merge_two_dicts_l2(x, y):
     z = x.copy()
     # z.update(y)
 
     for k, v in y.items():
+        k = k+'-l2'
         if k in x.keys():
             raise KeyError(k)
         z[k] = v
 
     return z
-
 
 def main_line():
     # results = {}
@@ -238,80 +248,109 @@ def main_line():
     #     _results = pickle.load(f)
     # bs_results = merge_two_dicts(results, _results)
 
-    # in_dir = 'alpha_005-beta_005-20230515'
-    # OUT_DIR = f'{in_dir}/paper_plots'
-    # if not os.path.exists(OUT_DIR):
-    #     os.makedirs(OUT_DIR)
-    # cases = [
-    #     ('K=2_baseline.pkl', 'K=2_our_algorithm.pkl', 2, 80),
-    #     ('K=5_baseline.pkl', 'K=5_our_algorithm.pkl', 5, 200),
-    #     ('K=10_baseline.pkl', 'K=10_our_algorithm.pkl', 10, 400),   # p:10, m:400
-    #     ('K=15_baseline.pkl', 'K=15_our_algorithm.pkl', 15, 600)
-    # ]
-
-    in_dir = 'alpha_01-beta_01-20230520'
+    in_dir = 'alpha_005-beta_005-20230515'
     OUT_DIR = f'{in_dir}/paper_plots'
     if not os.path.exists(OUT_DIR):
         os.makedirs(OUT_DIR)
     cases = [
-        ('K_2-baseline.pkl', 'K_2-proposed.pkl', 2, 80),
-        ('K_5-baseline.pkl', 'K_5-proposed.pkl', 5, 200),
-        ('K_10-baseline.pkl', 'K_10-proposed.pkl', 10, 400),  # p:10, m:400
-        ('K_15-baseline.pkl', 'K_15-proposed.pkl', 15, 600)
+        # ('K=2_baseline.pkl', 'K=2_our_algorithm.pkl', 2, 80),
+        # ('K=5_baseline.pkl', 'K=5_our_algorithm.pkl', 5, 200),
+        # ('K=10_baseline.pkl', 'K=10_our_algorithm.pkl', 10, 400),   # p:10, m:400
+        # ('K=15_baseline.pkl', 'K=15_our_algorithm.pkl', 15, 600)
+
+        # ('K=2_our_algorithm.pkl', 'K=2_our_algorithm.pkl', 2, 80),
+        # ('K=5_our_algorithm.pkl', 'K=5_our_algorithm_l2.pkl', 5, 200),
+        ('K=10_our_algorithm.pkl', 'K=10_our_algorithm_l2.pkl', 10, 400),  # p:10, m:400
     ]
-    which_CFG='0.1'
+    which_CFG = '0.05'
+
+    # in_dir = 'alpha_01-beta_01-20230520'
+    # OUT_DIR = f'{in_dir}/paper_plots'
+    # if not os.path.exists(OUT_DIR):
+    #     os.makedirs(OUT_DIR)
+    # cases = [
+    #     # ('K_2-baseline.pkl', 'K_2-proposed.pkl', 2, 80),
+    #     # ('K_5-baseline.pkl', 'K_5-proposed.pkl', 5, 200),
+    #     # ('K_10-baseline.pkl', 'K_10-proposed.pkl', 10, 400),  # p:10, m:400
+    #     # ('K_15-baseline.pkl', 'K_15-proposed.pkl', 15, 600)
+    # ]
+    # which_CFG='0.1'
     for plot_metric in ['min_dist']:  # ['min_dist', 'max_dist', 'min_loss']:
-        for bs_file, prop_file, p, m, in cases:
-            res_plot_pkl = f'{OUT_DIR}/{bs_file}_{plot_metric}.pkl'
+        for prop_file, prop2_file, p, m, in cases:
+            res_plot_pkl = f'{OUT_DIR}/{prop2_file}_{plot_metric}.pkl'
             if os.path.exists(res_plot_pkl):
                 print('loading results from {}'.format(res_plot_pkl))
                 with open(res_plot_pkl, 'rb') as f:
                     plot_data = pickle.load(f)
             else:
-                # 1. Get baseline result
-                bs_file = os.path.join(in_dir, bs_file)
-                with open(bs_file, 'rb') as f:
-                    bs_results = pickle.load(f)
-                if which_CFG=='0.1':
-                    cfg2 = get_CFG(p=[p], m=[m], alg_method=['baseline'], update_method=['trimmed_mean'],
-                                   alpha=[0.1], beta=[0.1])
-                else:
-                    cfg2 = get_CFG(p=[p], m=[m], alg_method=['baseline'], update_method=['trimmed_mean'])
+                # # 1. Get baseline result
+                # bs_file = os.path.join(in_dir, bs_file)
+                # with open(bs_file, 'rb') as f:
+                #     bs_results = pickle.load(f)
+                # if which_CFG=='0.1':
+                #     cfg2 = get_CFG(p=[p], m=[m], alg_method=['baseline'], update_method=['trimmed_mean'],
+                #                    alpha=[0.1], beta=[0.1])
+                # else:
+                #     cfg2 = get_CFG(p=[p], m=[m], alg_method=['baseline'], update_method=['trimmed_mean'])
+                #
+                # bs_plot_data = extract_data(bs_results, cfg2, plot_metric)
 
-                bs_plot_data = extract_data(bs_results, cfg2, plot_metric)
-
-                # 2. Get proposed resutl
-                prop_file = os.path.join(in_dir, prop_file)
-                with open(prop_file, 'rb') as f:
+                # 2. Get proposed result
+                prop_path = os.path.join(in_dir, prop_file)
+                with open(prop_path, 'rb') as f:
                     prop_results = pickle.load(f)
                 if which_CFG=='0.1':
                     cfg2 = get_CFG(p=[p], m=[m], alg_method=['proposed'], update_method=['mean', 'median', 'trimmed_mean'],
                                 alpha = [0.1], beta = [0.1])
                 else:
                     cfg2 = get_CFG(p=[p], m=[m], alg_method=['proposed'], update_method=['mean', 'median', 'trimmed_mean'])
-
-                try:
-                    prop_plot_data = extract_data(prop_results, copy.deepcopy(cfg2), plot_metric)
-                except Exception as e:
-                    print(e)
-                    prop_plot_data = extract_data_proposed(prop_results, copy.deepcopy(cfg2), plot_metric)  # for old results
-
-                # if prop_file.startswith('K=10_') or prop_file.startswith('K=15_'):
-                #     prop_plot_data = extract_data_proposed(prop_results, cfg2, plot_metric)  # for old results
-                # else:
+                # try:
                 #     prop_plot_data = extract_data(prop_results, cfg2, plot_metric)
+                # except Exception as e:
+                #     print(e)
+                #     prop_plot_data = extract_data_proposed(prop_results, cfg2, plot_metric)  # for old results
+
+                if ('K=10_' in prop_file) or ('K=15_' in prop_file):
+                    # for old results, there is new "algorithm" in key when we look up from the results
+                    prop_plot_data = extract_data_proposed(prop_results, cfg2, plot_metric)  # for old results
+                else:
+                    prop_plot_data = extract_data(prop_results, cfg2, plot_metric)
+
+                # 2. Get proposed result with l2
+                prop2_path = os.path.join(in_dir, prop2_file)
+                with open(prop2_path, 'rb') as f:
+                    prop_results = pickle.load(f)
+                if which_CFG == '0.1':
+                    cfg2 = get_CFG(p=[p], m=[m], alg_method=['proposed'],
+                                   update_method=['mean', 'median', 'trimmed_mean'],
+                                   alpha=[0.1], beta=[0.1])
+                else:
+                    cfg2 = get_CFG(p=[p], m=[m], alg_method=['proposed'],
+                                   update_method=['mean', 'median', 'trimmed_mean'])
+                # try:
+                #     prop_plot_data = extract_data(prop_results, cfg2, plot_metric)
+                # except Exception as e:
+                #     print(e)
+                #     prop_plot_data = extract_data_proposed(prop_results, cfg2, plot_metric)  # for old results
+                prop_plot_data2 = extract_data(prop_results, cfg2, plot_metric)
 
                 # 3. Combine two plot data and plot
-                plot_data = merge_two_dicts(prop_plot_data, bs_plot_data)
+                plot_data = merge_two_dicts_l2(prop_plot_data, prop_plot_data2)
 
             # key_algs = [('baseline-trimmed_mean', 'Baseline'),
             #             ('proposed-mean', 'FedAvg'), ('proposed-median', 'Median'),
             #             ('proposed-trimmed_mean', 'Trimmed-mean')]
 
-            key_algs = [('baseline-trimmed_mean', 'Three-Stage'),
+            key_algs = [
+                        # ('baseline-trimmed_mean', 'Three-Stage'),
                         ('proposed-mean', 'FedAvg(IFCA)'),
                         ('proposed-median', 'Median(Alg1)'),
-                        ('proposed-trimmed_mean', 'Trimmed-mean(Alg1)')]
+                        ('proposed-trimmed_mean', 'Trimmed-mean(Alg1)'),
+
+                        ('proposed-mean-l2', 'FedAvg(IFCA)-l2'),
+                        ('proposed-median-l2', 'Median(Alg1)-l2'),
+                        ('proposed-trimmed_mean-l2', 'Trimmed-mean(Alg1)-l2')
+                        ]
 
             plot_res(plot_data, key_algs, plot_metric, out_dir=OUT_DIR, pkl_file =res_plot_pkl)
             # break
@@ -387,7 +426,6 @@ def main_bar():
     out_dir = 'alpha_005-beta_005-20230515/paper_plots'
     # files = ['K=2_baseline.pkl_min_dist.pkl','K=5_baseline.pkl_min_dist.pkl','K=10_baseline.pkl_min_dist.pkl', 'K=15_baseline.pkl_min_dist.pkl']
     files = ['K=2_baseline.pkl_min_dist.pkl', 'K=5_baseline.pkl_min_dist.pkl',
-             'K=10_baseline.pkl_min_dist.pkl',
              'K=15_baseline.pkl_min_dist.pkl']
 
     # out_dir = 'alpha_01-beta_01-20230520/paper_plots'
@@ -397,8 +435,8 @@ def main_bar():
     ## necessary variables
     N = len(files)
     ind = np.arange(N)  # the x locations for the groups
-    xTickMarks = ['K=2', 'K=5', 'K=10', 'K=15']
-    # xTickMarks = ['K=2', 'K=5', 'K=15']
+    # xTickMarks = ['K=2', 'K=5', 'K=10', 'K=15']
+    xTickMarks = ['K=2', 'K=5', 'K=15']
     width = 0.18  # the width of the bars
 
     res = {}
@@ -461,5 +499,5 @@ def main_bar():
     plt.show()
 
 if __name__ == '__main__':
-    # main_line()
-    main_bar()
+    main_line()
+    # main_bar()

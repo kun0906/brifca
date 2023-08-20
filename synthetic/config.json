@@ -20,5 +20,6 @@
     "init_method": "server_omniscient",
 
     "update_method":"median",
-    "beta": 0.05
+    "beta": 0.05,
+    "alg_method":"baseline2"
 }
