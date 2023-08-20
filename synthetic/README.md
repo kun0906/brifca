@@ -34,6 +34,16 @@ This part is for synthetic experiments.
 python3 run_all.py
 ```
 
+* To collect all the results
+```bash
+python3 collect_all_results.py
+```
+
+* To show the results
+```bash
+python3 plot_result.py
+```
+
 [//]: # (* To reproduce results in the paper:)
 
 [//]: # (```bash)

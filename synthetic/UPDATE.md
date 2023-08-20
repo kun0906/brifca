@@ -1,3 +1,9 @@
+v0.1.0: Replace argmin(loss) with argmin(l2)
+1. Add train_cluster_l2.py to replace argmin(loss) with argmin(l2)
+2. Add plot_results_l2.py 
+3. run_all.py (for each setting) and collect_all_results.py (collecting all the results)
+
+
 V0.0.9: Get n_cpu_cores by psutil 
 1. Update max_procs = min(30, n_cpu_cores)
 2. Add plot_results 

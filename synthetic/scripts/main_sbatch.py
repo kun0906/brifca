@@ -4,7 +4,7 @@ import subprocess
 
 
 def generate_sh():
-    out_dir = 'sh'
+    out_dir = '../sh'
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
 

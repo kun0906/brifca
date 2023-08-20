@@ -13,7 +13,12 @@ import datetime
 from util import *
 
 from generate_synthetic_dataset import *
-from train_cluster import *
+# from train_cluster import *
+l2 = True
+if l2:
+    from train_cluster_l2 import *
+else:
+    from train_cluster import *
 import train_cluster_baseline
 
 print = functools.partial(print, flush=True)
