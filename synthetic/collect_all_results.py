@@ -69,7 +69,7 @@ def main(n=50):
 
             "n": [100],  # [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
 
-            "d": [20, 50, 100, 200, 500],  # different data dimensions: [5, 25, 50, 100, 200]
+            "d": [5, 50, 100, 200, 500],  # different data dimensions: [5, 50, 100, 200, 500]
 
             "noise_scale": [0.4472],  # standard deviation of noise/epsilon: sigma**2 = 0.2
 
@@ -338,7 +338,7 @@ class MyProcessRunner(ProcessRunner):
 
     def plot_res(self, plot_metric):
 
-        results_fname = f'{OUT_DIR}/results.pkl'
+        results_fname = f'{OUT_DIR}/{args.p}-{args.m}-results.pkl'
         with open(results_fname, 'rb') as f:
             results = pickle.load(f)
 

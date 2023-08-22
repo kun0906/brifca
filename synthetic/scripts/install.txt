@@ -42,6 +42,7 @@ sshfs zt6264@nobel.princeton.edu:/u/zt6264/ifca/synthetic ifca
 # https://unix.stackexchange.com/questions/417428/copying-files-with-certain-extensions-with-scp
 scp ky8517@tiger.princeton.edu:'/scratch/gpfs/ky8517/ifca/synthetic/*.png' ~/
 scp ky8517@nobel.princeton.edu:'/u/ky8517/ifca/synthetic/OUT/results.pkl' ~/Downloads
+scp ky8517@nobel.princeton.edu:'/u/ky8517/ifca/synthetic/OUT/10-400-results.pkl' ~/Downloads
 
 sacct --format="JobID,JobName%30"
 

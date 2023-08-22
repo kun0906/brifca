@@ -134,6 +134,55 @@ class TrainCluster(object):
                 else:
                     raise NotImplementedError(f'{init_method}')
                 # self.warm_start()
+
+                # cluster_assignment_init: each cluster has 60% correct assignment.
+                self.cluster_assignment_init = np.asarray(self.dataset['cluster_assignment'])
+                p = self.config['p']
+                m_n = self.config['m_n']    # number of normal machines
+                m0 = m_n // p     # each cluster has "m0" clients
+                for i in range(p):
+                    # random sample k indices from an array with uniform dist.
+                    size = int(np.floor(m0*0.4))
+                    indices = np.random.choice(list(range(i*m0, (i+1)*m0, 1)), size=size, replace=False, p=None)
+                    # random sample k labels from the other clusters
+                    other_clusters = [j for j in range(p) if j!=i]
+                    values = np.random.choice(other_clusters, size=size, replace=True, p=None)
+                    # replace with the new labels
+                    self.cluster_assignment_init[indices] = values
+
+                # Random choose cluster assignment for Byzantine machines
+                m_b = self.config['m_b']
+                values = np.random.choice(list(range(p)), size=m_b, replace=True, p=None)
+                self.cluster_assignment_init[m_n:m_n+m_b] = values
+
+                # Clients: update client weights locally
+                flag_machines = np.asarray(
+                    [True if self.dataset['data'][m_i][-1][0].startswith('normal') else False for m_i in
+                     range(m_n + m_b)])
+
+                # for each machine, compute the losses and grads of all distributions/clusters (we need the labels)
+                for m_i in range(m_n + m_b):
+                    # the m_i client should belong to the cluster: self.cluster_assignment_labels[m_i]
+                    p_i = self.cluster_assignment_init[m_i]
+                    (X, y, y_label) = self.dataset['data'][m_i]
+                    if flag_machines[m_i]:  # y_label[0].startswith('normal'):  # Normal loss
+                        loss_val, grad = calculate_loss_grad(self.models[p_i], self.criterion, X,
+                                                             y)  # just compute the grads, no updates
+                        # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
+                    else:  # Byzantine loss
+                        tmp_model = copy.deepcopy(self.models[p_i])
+                        ws = tmp_model.weight()
+                        ws.data = 3 * ws.data
+                        loss_val, grad = calculate_loss_grad(tmp_model, self.criterion, X, y)
+                        # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
+                        # loss_val, grad = 0, 0
+
+                    # update the weights
+                    new_weights = copy.deepcopy(self.models[p_i].weight().data.numpy())
+                    new_weights = new_weights - lr * grad.data.numpy()  # update the weights
+
+                    self.models[p_i].weight().data = torch.tensor(new_weights)  # update the globle model with new_weights
+
             else:
                 self.epoch = epoch
 
@@ -207,7 +256,6 @@ class TrainCluster(object):
         m_n = self.config['m_n']  # number of normal machines
         m_b = self.config['m_b']  # number of byzantine machines
 
-
         result = {}
 
         # calc loss and grad
@@ -220,66 +268,62 @@ class TrainCluster(object):
         # Clients:
         # for each machine, compute the losses and grads of all distributions/clusters (we need the labels)
         for m_i in range(m_n + m_b):
-            for p_i in range(p):
-                (X, y, y_label) = self.dataset['data'][m_i]
-                if flag_machines[m_i]:  # y_label[0].startswith('normal'):  # Normal loss
-                    loss_val, grad = calculate_loss_grad(self.models[p_i], self.criterion, X, y) # just compute the grads, no updates
-                    # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
-                else:  # Byzantine loss
-                    tmp_model = copy.deepcopy(self.models[p_i])
-                    ws = tmp_model.weight()
-                    ws.data = 3 * ws.data
-                    loss_val, grad = calculate_loss_grad(tmp_model, self.criterion, X, y)
-                    # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
-                    # loss_val, grad = 0, 0
+            # the m_i client should belong to the cluster: self.cluster_assignment_labels[m_i]
+            p_i = self.cluster_assignment_init[m_i]
+            # server_weights_ = copy.deepcopy(self.models[p_i].weight().data.numpy())
+            (X, y, y_label) = self.dataset['data'][m_i]
+            if flag_machines[m_i]:  # y_label[0].startswith('normal'):  # Normal loss
+                loss_val, grad = calculate_loss_grad(self.models[p_i], self.criterion, X, y) # just compute the grads, no updates
+                # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
+            else:  # Byzantine loss
+                tmp_model = copy.deepcopy(self.models[p_i])
+                ws = tmp_model.weight()
+                ws.data = 3 * ws.data
+                loss_val, grad = calculate_loss_grad(tmp_model, self.criterion, X, y)
+                # loss_val, grad = calculate_loss_grad(copy.deepcopy(self.models[p_i]), self.criterion, X, y)
+                # loss_val, grad = 0, 0
 
-                # use L2 to find the closet model
-                pre_weights = copy.deepcopy(self.models[p_i].weight().data.numpy())
-                new_weights = pre_weights - lr * grad.data.numpy()
-                loss_val = np.sqrt(np.sum((new_weights - pre_weights) ** 2))
+            # use L2 to find the closet model
+            new_weights = copy.deepcopy(self.models[p_i].weight().data.numpy())
+            new_weights = new_weights - lr * grad.data.numpy()  # update the weights
+            # compute the l2 distance
 
-                losses[(m_i, p_i)] = loss_val
-                grads[(m_i, p_i)] = grad
-                # print(m_i, p_i, self.models[p_i].weight())
+            l2_dists = []
+            for _j in range(p):
+                losses[(m_i, _j)] = torch.inf
+                grads[(m_i, _j)] = torch.tensor(np.zeros(new_weights.shape), dtype=torch.float32)
+                # for each work, compute the l2 distance between new_weights and p server_weights.
+                _l2 = np.sqrt(np.sum((new_weights - self.models[_j].weight().data.numpy()))**2)
+                l2_dists.append(_l2)
+            # update the cluster_assignment_init
+            p_i = np.argmin(np.asarray(l2_dists))   # update p_i
+            self.cluster_assignment_init[m_i] = p_i
+            # here we keep the similar structure as before, so we don't need to modify too much in the latter code
+            grads[(m_i, p_i)] = torch.tensor(new_weights, dtype=torch.float32)
+            losses[(m_i, p_i)] = loss_val
 
         # calculate scores
         scores = {}
         for m_i in range(m_n + m_b):
             # if not flag_machines[m_i]: continue  # only for normal machines
-            machine_losses = [losses[(m_i, p_i)] for p_i in range(p)]  # for each machine, find all "p" losses
-
-            if self.config['score'] == 'set':
-                min_p_i = np.argmin(
-                    machine_losses)  # for each machine, find the distribution that has the minimal loss.
-                for p_i in range(p):
-                    if p_i == min_p_i:  # if there are more than p that has the same min_p_i, does it effect the final results?
-                        scores[(m_i, p_i)] = 1  # assign the minimal distribution to 1.
-                    else:
-                        scores[(m_i, p_i)] = 0
-
-            elif self.config['score'] == 'em':
-
-                from scipy.special import softmax
-                softmaxed_loss = softmax(machine_losses)
-                for p_i in range(p):
-                    scores[(m_i, p_i)] = softmaxed_loss[p_i]
-
-            else:
-                assert self.config['score'] in ['set', 'em']
+            for p_i in range(p):
+                min_p_i = self.cluster_assignment_init[m_i]
+                if p_i == min_p_i:
+                    scores[(m_i, p_i)] = 1  # assign the minimal distribution to 1.
+                else:
+                    scores[(m_i, p_i)] = 0
 
         # Server:
         # apply gradient update at server (here we only update normal machines)
         weights = []
         for p_i in range(p):
-            # find which machine is assigned to p_i. If scores([m_i, p_i]) == 1, m_i is assigned to p_i;
-            # otherwise, m_i is not.
             cluster_scores = [scores[(m_i, p_i)] for m_i in range(m_n + m_b)]
             if sum(cluster_scores) == 0:    # Kun: if there is no machine assigned to p_i, we randomly select a machine.
                 # print(cluster_grads)
                 _idx = np.random.choice(m_n+m_b, size=1)[0]
                 for j in range(p):
                     if j != p_i: scores[(_idx, j)] = 0  # assign the other value to 0 for this machine.
-                scores[(_idx, p_i)] = p_i
+                scores[(_idx, p_i)] = 1
                 cluster_scores = [scores[(_idx, p_i)]]
                 cluster_grads = [grads[(_idx, p_i)]]
                 print(p_i, _idx, cluster_scores, cluster_grads)
@@ -303,7 +347,8 @@ class TrainCluster(object):
             else:
                 raise NotImplementedError(f'{update_method}')
 
-            weight.data -= lr * tmp
+            # weight.data -= lr * tmp
+            weight.data = tmp       # in this l2 case, we already replace the grad with weights
             # normalize the weight
             # weight.data = weight.data/torch.linalg.norm(weight.data, 2)
             weights.append(weight.detach().numpy())
@@ -311,7 +356,7 @@ class TrainCluster(object):
         # Client:
         # evaluate min_losses. for each machine, find the minimal loss and corresponding label
         min_losses = []
-        cluster_assignment = []
+        cluster_assignment = [] # self.cluster_assignment_init
         for m_i in range(m_n + m_b):
             # if not flag_machines[m_i]: continue  # only normal machines
             machine_losses = [losses[(m_i, p_i)] for p_i in range(p)]

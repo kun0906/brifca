@@ -260,7 +260,7 @@ def main_line():
 
         # ('K=2_our_algorithm.pkl', 'K=2_our_algorithm.pkl', 2, 80),
         # ('K=5_our_algorithm.pkl', 'K=5_our_algorithm_l2.pkl', 5, 200),
-        ('K=10_our_algorithm.pkl', 'K=10_our_algorithm_l2.pkl', 10, 400),  # p:10, m:400
+        ('K=10_our_algorithm.pkl', '10-400-our_algorithm-l2.pkl', 10, 400),  # p:10, m:400
     ]
     which_CFG = '0.05'
 

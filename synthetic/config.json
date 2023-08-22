@@ -1,19 +1,19 @@
 {
-    "m" : 40,
-    "alpha": 0.1,
+    "m" : 200,
+    "alpha": 0.05,
 
-    "p" : 2,
+    "p" : 5,
 
     "n" : 100,
-    "d" : 2,
+    "d" : 20,
 
     "r" : 1.0,
 
-    "noise_scale": 0.45,
+    "noise_scale": 0.4472,
 
     "num_epochs": 300,
     "score":"set",
-    "lr":0.1,
+    "lr":0.01,
     "data_seed":0,
     "train_seed":0,
 
@@ -21,5 +21,5 @@
 
     "update_method":"median",
     "beta": 0.05,
-    "alg_method":"baseline2"
+    "alg_method":"proposed"
 }

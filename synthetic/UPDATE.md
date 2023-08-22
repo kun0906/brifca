@@ -1,7 +1,38 @@
-v0.1.0: Replace argmin(loss) with argmin(l2)
+v0.1.8: Replace argmin(loss) with argmin(l2) with new implementation
 1. Add train_cluster_l2.py to replace argmin(loss) with argmin(l2)
 2. Add plot_results_l2.py 
 3. run_all.py (for each setting) and collect_all_results.py (collecting all the results)
+
+
+v0.1.7: Replace argmin(loss) with argmin(l2)
+1. Add train_cluster_l2.py to replace argmin(loss) with argmin(l2)
+2. Add plot_results_l2.py 
+3. run_all.py (for each setting) and collect_all_results.py (collecting all the results)
+
+v0.1.6: Updte .gitignore
+
+v0.1.5: Update synthetic
+
+v0.1.4: Update README.md
+1. Update synthetic
+2. Delete .gitignore
+
+v0.1.3: Update gradient computing for server update
+1. Update gradient computing for server update
+2. Chang outliers
+
+v0.1.2: Move models to GPU and change outliers
+1. Move models to CPU
+2. Change outliers
+
+v0.1.1: Add small_set_mnist
+1. Sample a subset of MNIST
+2. Update trimmed_mean with scipy
+
+v0.1.0: Update train_cluster_mnist.py in "mnist"
+1. Add Byzantine machines
+2. Update "the way of weight update" on the server
+3. Add plot_res()
 
 
 V0.0.9: Get n_cpu_cores by psutil 

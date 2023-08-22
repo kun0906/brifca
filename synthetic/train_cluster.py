@@ -274,7 +274,7 @@ class TrainCluster(object):
                 _idx = np.random.choice(m_n+m_b, size=1)[0]
                 for j in range(p):
                     if j != p_i: scores[(_idx, j)] = 0  # assign the other value to 0 for this machine.
-                scores[(_idx, p_i)] = p_i
+                scores[(_idx, p_i)] = 1 #p_i
                 cluster_scores = [scores[(_idx, p_i)]]
                 cluster_grads = [grads[(_idx, p_i)]]
                 print(p_i, _idx, cluster_scores, cluster_grads)

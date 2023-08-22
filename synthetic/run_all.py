@@ -8,6 +8,7 @@
 
     Once you get all each result, next you can collect them by collect_all_results.py
     After that, you can show the results by plot_result.py
+    python3 collect_all_results.py
 
 """
 import os
@@ -58,9 +59,9 @@ def main(n=100, d=10, alg_method='baseline', update_method='trimmed_mean'):
     if is_debugging:
         # Note that the last three parameters must be "data_seed, train_seed, and lr"
         cfg = {
-            "p": [15],  # number of distributions/clusters
+            "p": [5],  # number of distributions/clusters
 
-            "m": [600],  # number of total machines (Normal + Byzantine)
+            "m": [200],  # number of total machines (Normal + Byzantine)
             'alpha': [0.05],  # percent of Byzantine machines
 
             "n": [n],  # don't use multiple n here. this file is used to obtain single results with the same setting.
