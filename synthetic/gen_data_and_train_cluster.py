@@ -16,7 +16,8 @@ from generate_synthetic_dataset import *
 # from train_cluster import *
 l2 = True
 if l2:
-    from train_cluster_l2 import *
+    # from train_cluster_l2 import *
+    from train_cluster_l2_mislabeling import *
 else:
     from train_cluster import *
 import train_cluster_baseline

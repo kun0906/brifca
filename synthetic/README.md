@@ -27,12 +27,32 @@ This part is for synthetic experiments.
     "train_seed":0        # random seed for weight initiailization and training
 ```
 
+## Load environment
+```bash
+cd /u/ky8517/ifca/synthetic
+module load anaconda3/2021.11
+conda activate py3104_ifca
+```
+
+
 ## Running the experiments
 
 * To run the single instance of experiment (with data_seed=0 and train_seed=0):
 ```bash
 python3 run_all.py
 ```
+
+
+* To run all the experiments
+```bash
+./sbatch_nobel.sh
+```
+
+* Debug a single instance of experiment 
+```bash
+python3 gen_data_and_train_cluster.py
+```
+
 
 * To collect all the results
 ```bash

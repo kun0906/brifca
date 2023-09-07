@@ -1,3 +1,9 @@
+v0.1.9: Add mislabeling rate
+1. Add mislabeling rate 
+2. Update geometric_kmean. 
+
+
+
 v0.1.8: Replace argmin(loss) with argmin(l2) with new implementation
 1. Add train_cluster_l2.py to replace argmin(loss) with argmin(l2)
 2. Add plot_results_l2.py 

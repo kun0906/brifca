@@ -258,9 +258,9 @@ def main_line():
         # ('K=10_baseline.pkl', 'K=10_our_algorithm.pkl', 10, 400),   # p:10, m:400
         # ('K=15_baseline.pkl', 'K=15_our_algorithm.pkl', 15, 600)
 
-        # ('K=2_our_algorithm.pkl', 'K=2_our_algorithm.pkl', 2, 80),
+        ('K=2_our_algorithm.pkl', 'K=2_our_algorithm.pkl', 2, 80),
         # ('K=5_our_algorithm.pkl', 'K=5_our_algorithm_l2.pkl', 5, 200),
-        ('K=10_our_algorithm.pkl', '10-400-our_algorithm-l2.pkl', 10, 400),  # p:10, m:400
+        # ('K=10_our_algorithm.pkl', '10-400-our_algorithm-l2.pkl', 10, 400),  # p:10, m:400
     ]
     which_CFG = '0.05'
 
@@ -275,7 +275,7 @@ def main_line():
     #     # ('K_15-baseline.pkl', 'K_15-proposed.pkl', 15, 600)
     # ]
     # which_CFG='0.1'
-    for plot_metric in ['min_dist']:  # ['min_dist', 'max_dist', 'min_loss']:
+    for plot_metric in ['mislabeling_rate']:  # ['min_dist', 'max_dist', 'min_loss']:
         for prop_file, prop2_file, p, m, in cases:
             res_plot_pkl = f'{OUT_DIR}/{prop2_file}_{plot_metric}.pkl'
             if os.path.exists(res_plot_pkl):

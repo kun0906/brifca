@@ -69,7 +69,7 @@ def main(n=50):
 
             "n": [100],  # [50, 100],  # number of data points per each machine, [50, 100, 200, 400, 800]
 
-            "d": [5, 50, 100, 200, 500],  # different data dimensions: [5, 50, 100, 200, 500]
+            "d": [5, 20, 50, 100, 200, 500],  # different data dimensions: [5, 50, 100, 200, 500]
 
             "noise_scale": [0.4472],  # standard deviation of noise/epsilon: sigma**2 = 0.2
 
@@ -121,7 +121,7 @@ def main(n=50):
 
     runner.run(force=args.force)
     runner.summarize(force=args.force)
-    for plot_metric in ['min_dist', 'max_dist', 'min_loss']:
+    for plot_metric in ['min_dist', 'max_dist', 'min_loss', 'mislabeling_rate']:
         # plot_metric = 'min_dist'  # 'max_dist'    # min_loss, 'min_dist'
         runner.plot_res(plot_metric=plot_metric)
     # runner.summarize(force=args.force)

@@ -27,7 +27,7 @@ python3 -V
 uname -a
 
 for n in 100; do
-    for d in 20 50 100 200 500; do
+    for d in 5 20 50 100 200 500; do
         for update_method in "mean" "median" "trimmed_mean"; do
             for alg_method in "proposed"; do
                 cnt=$((cnt + 1))
